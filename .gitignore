@@ -1,0 +1,9 @@
+# Created by .gitignore support plugin (hsz.mobi)
+### Ada template
+# Object file
+*.o
+
+# Ada Library Information
+*.ali
+
+.idea/workspace.xml
