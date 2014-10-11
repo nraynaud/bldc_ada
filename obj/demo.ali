@@ -1,0 +1,68 @@
+V "GNAT Lib v2014"
+M P 0 W=b
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB LC TF
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U demo%b		demo.adb		40634f63 NE OO SU
+W driver%s		driver.adb		driver.ali
+W last_chance_handler%s	last_chance_handler.adb	last_chance_handler.ali
+W system%s		system.ads		system.ali
+W system.tasking.restricted.stages%s  s-tarest.adb  s-tarest.ali
+
+D ada.ads		20141009194225 3ffc8e18 ada%s
+D a-unccon.ads		20141009194225 f9eb8f06 ada.unchecked_conversion%s
+D demo.adb		20141010161417 3a1e2d6a demo%b
+D driver.ads		20141011203118 3be6e89e driver%s
+D last_chance_handler.ads  20141011203118 da51f004 last_chance_handler%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-bb.ads		20141009194225 883768d6 system.bb%s
+D s-bbbosu.ads		20141009194225 3f67a4b3 system.bb.board_support%s
+D s-bbcppr.ads		20141009194225 37229a46 system.bb.cpu_primitives%s
+D s-bcprmu.ads		20141009194225 b5ec9aa9 system.bb.cpu_primitives.multiprocessors%s
+D s-bbinte.ads		20141009194225 4743e2d6 system.bb.interrupts%s
+D s-bbpara.ads		20141009194225 ea820e4a system.bb.parameters%s
+D s-bbthre.ads		20141009194225 d71e350d system.bb.threads%s
+D s-bbthqu.ads		20141009194225 6162d982 system.bb.threads.queues%s
+D s-bbtime.ads		20141009194225 d0e0540a system.bb.time%s
+D s-multip.ads		20141009194225 f33e0e35 system.multiprocessors%s
+D s-osinte.ads		20141009194225 9761d940 system.os_interface%s
+D s-parame.ads		20141009194225 fd0a774e system.parameters%s
+D s-stoele.ads		20141009194225 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20141009194225 ed88f8fb system.storage_elements%b
+D s-tasinf.ads		20141009194225 801abd01 system.task_info%s
+D s-taspri.ads		20141009194225 3d95fc44 system.task_primitives%s
+D s-taskin.ads		20141009194225 41d03b44 system.tasking%s
+D s-tasres.ads		20141009194225 0c8ef6fb system.tasking.restricted%s
+D s-tarest.ads		20141009194225 128b2dbd system.tasking.restricted.stages%s
+X 3 demo.adb
+45U11*Demo 45b11 51l5 51t9
+X 4 driver.ads
+34K9*Driver 3|30w6 4|51e11
+X 5 last_chance_handler.ads
+39K9*Last_Chance_Handler 3|37w6 5|45e24
+41U14*Last_Chance_Handler 42i<c,__gnat_last_chance_handler>22
+X 6 system.ads
+60K9*System 3|43w6 46r21 6|170e11
+87M9*Address
+123I12*Any_Priority{integer}
+124I12*Priority{123I12} 3|46r28
+X 23 s-taskin.ads
+347V13*Get_Sec_Stack{6|87M9} 348i<c,__gnat_get_secondary_stack>22
+402U14*Initialize_Slave 403i24
+X 25 s-tarest.ads
+222U14*Activate_All_Tasks_Sequential 223i<c,__gnat_activate_all_tasks>22
+

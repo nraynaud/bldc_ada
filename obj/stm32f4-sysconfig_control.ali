@@ -1,0 +1,56 @@
+V "GNAT Lib v2014"
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLEMENTATION_RESTRICTIONS
+RR NO_ELABORATION_CODE
+RV SPARK_05
+
+U stm32f4.sysconfig_control%s  stm32f4-sysconfig_control.ads  4f89875b NE OO PK IU
+W stm32f4%s		stm32f4.adb		stm32f4.ali
+
+D interfac.ads		20141009194225 69adb1b9 interfaces%s
+D stm32f4.ads		20141011203118 dce524ba stm32f4%s
+D stm32f4-sysconfig_control.ads  20141011203118 936ca3e1 stm32f4.sysconfig_control%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-unstyp.ads		20141009194225 510692af system.unsigned_types%s
+X 1 interfac.ads
+63M9*Unsigned_32
+X 2 stm32f4.ads
+35K9*STM32F4 138e12 3|34r9 74r5
+37M9*Word<1|63M9> 3|55r17 56r17 61r17
+41M9*Bits_1
+43M9*Bits_4
+45A9*Bits_32x1(41M9)<integer> 3|37r15 38r15 39r15 40r15 41r15 42r15
+47A9*Bits_8x4(43M9)<integer> 3|57r17 58r17 59r17 60r17
+X 3 stm32f4-sysconfig_control.ads
+34K17*SYSCONFIG_Control 2|35k9 3|74l13 74e30
+36R9*EXTI_Register 43e14 45r8
+37a7*IMR{2|45A9} 46r7
+38a7*EMR{2|45A9} 47r7
+39a7*RTSR{2|45A9} 48r7
+40a7*FTSR{2|45A9} 49r7
+41a7*SWIER{2|45A9} 50r7
+42a7*PR{2|45A9} 51r7
+54R9*SYSCFG_Register 62e14 64r8
+55m7*MEMRM{2|37M9} 65r7
+56m7*PMC{2|37M9} 66r7
+57a7*EXTICR1{2|47A9} 67r7
+58a7*EXTICR2{2|47A9} 68r7
+59a7*EXTICR3{2|47A9} 69r7
+60a7*EXTICR4{2|47A9} 70r7
+61m7*CMPCR{2|37M9} 71r7
+

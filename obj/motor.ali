@@ -1,0 +1,80 @@
+V "GNAT Lib v2014"
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U motor%b		motor.adb		1037e51a OO PK IL
+W registers%s		registers.ads		registers.ali
+
+U motor%s		motor.ads		0b6df15f EB EE NE OO PK IL
+W stm32f4%s		stm32f4.adb		stm32f4.ali
+
+D ada.ads		20141009194225 3ffc8e18 ada%s
+D a-unccon.ads		20141009194225 f9eb8f06 ada.unchecked_conversion%s
+D interfac.ads		20141009194225 69adb1b9 interfaces%s
+D motor.ads		20141011203118 d788d5e5 motor%s
+D motor.adb		20141011203723 e9c616a5 motor%b
+D registers.ads		20141011203118 2e79265a registers%s
+D stm32f4.ads		20141011203118 dce524ba stm32f4%s
+D stm32f4-busses.ads	20141011203118 826bb111 stm32f4.busses%s
+D stm32f4-genericperipheral.ads  20141011203118 13a417c8 stm32f4.genericperipheral%s
+D stm32f4-gpio.ads	20141011205739 1bf074ce stm32f4.gpio%s
+D stm32f4-reset_clock_control.ads  20141011203118 bb502cff stm32f4.reset_clock_control%s
+D stm32f4-sysconfig_control.ads  20141011203118 936ca3e1 stm32f4.sysconfig_control%s
+D stm32f4-tim.ads	20141011203118 dec51611 stm32f4.tim%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-stoele.ads		20141009194225 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20141009194225 ed88f8fb system.storage_elements%b
+D s-unstyp.ads		20141009194225 510692af system.unsigned_types%s
+X 3 interfac.ads
+60M9*Unsigned_16
+63M9*Unsigned_32
+109V13*Shift_Left{63M9} 5|19s28 24s51
+X 4 motor.ads
+3K9*motor 14E14 17l5 17e10 5|3b14 49l5 49t10
+6E9*Direction 6e31
+6n23*CCW{6E9}
+6n28*CW{6E9}
+8U14*enable 5|11b14 15l8 15t14
+9U14*disable 5|5b14 9l8 9t15
+10U14*setPhase 10>24 5|27b14 33l8 33t16
+10m24 phase{7|38M9} 5|27b24 29r23
+12b4*enabled{boolean} 5|7m7 13m7 30r10
+14U14 setBits 5|14s7 22b14 25l8 25t15 31s10
+15U14 clearBits 5|8s7 17b14 20l8 20t17
+16m4 currentPhase{7|38M9} 5|24r34 29m7
+X 5 motor.adb
+4m4 my_pins{7|37M9} 19r40 24r63
+35U14 Initialize 35b14 46l8 46t18 48s4
+X 6 registers.ads
+41K9*Registers 5|1w6 1r21 6|76e14
+46r4*RCC{11|38R9} 5|38m7
+53K12*GPIOE[10|43] 5|19r7 24r7
+X 7 stm32f4.ads
+35K9*STM32F4 4|1w6 1r19 7|138e12
+37M9*Word<3|63M9> 5|4r23 24r28
+38M9*Half_Word<3|60M9> 4|10r32 16r19 5|27r32
+X 8 stm32f4-busses.ads
+10b7*GPIOE{boolean} 5|38m19
+X 10 stm32f4-gpio.ads
+76R9*GPIO_Register
+83m7*BSRR{7|37M9} 5|19m20[6|53] 24m20[6|53]
+100r4*Device{76R9[6|53]} 5|19m13[6|53] 24m13[6|53]
+X 11 stm32f4-reset_clock_control.ads
+52r7*AHB1ENR{8|5R9} 5|38m11
+

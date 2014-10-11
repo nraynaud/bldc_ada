@@ -1,0 +1,28 @@
+[GENERATED OBJECT FILE]
+b__demo.o
+[PROJECT FILES]
+/vagrant/bldc_ada/demo_leds.gpr
+20141009232042
+[BOUND OBJECT FILES]
+/vagrant/bldc_ada/obj/demo.o
+/vagrant/bldc_ada/obj/stm32f4.o
+/vagrant/bldc_ada/obj/stm32f4-busses.o
+/vagrant/bldc_ada/obj/stm32f4-genericperipheral.o
+/vagrant/bldc_ada/obj/stm32f4-gpio.o
+/vagrant/bldc_ada/obj/stm32f4-reset_clock_control.o
+/vagrant/bldc_ada/obj/stm32f4-sysconfig_control.o
+/vagrant/bldc_ada/obj/stm32f4-tim.o
+/vagrant/bldc_ada/obj/registers.o
+/vagrant/bldc_ada/obj/button.o
+/vagrant/bldc_ada/obj/leds.o
+/vagrant/bldc_ada/obj/last_chance_handler.o
+/vagrant/bldc_ada/obj/motor.o
+/vagrant/bldc_ada/obj/driver.o
+[GENERATED SOURCE FILES]
+b__demo.ads
+b__demo.adb
+b__demo.ali
+[RESULTING OPTIONS]
+-L/vagrant/bldc_ada/obj/
+-L/vagrant/bldc_ada/obj/
+-L/vagrant/arm-ada/adalib/

@@ -1,0 +1,150 @@
+V "GNAT Lib v2014"
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB LC TF
+
+RN
+RV NO_DELAY
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_TASKING
+RV NO_DEFAULT_INITIALIZATION
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+RV MAX_TASKS=1
+
+U driver%b		driver.adb		eb623963 OO PK
+W ada%s			ada.ads			ada.ali
+W ada.real_time%s	a-reatim.adb		a-reatim.ali
+W ada.real_time.delays%s  a-retide.adb		a-retide.ali
+W button%s		button.adb		button.ali
+W leds%s		leds.adb		leds.ali  AD
+W motor%s		motor.adb		motor.ali
+W registers%s		registers.ads		registers.ali
+W stm32f4%s		stm32f4.adb		stm32f4.ali
+W system.tasking.restricted.stages%s  s-tarest.adb  s-tarest.ali
+
+U driver%s		driver.ads		a02c920d EE OO PK
+W system%s		system.ads		system.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.storage_elements%s  s-stoele.adb	s-stoele.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.restricted.stages%s  s-tarest.adb  s-tarest.ali
+
+D ada.ads		20141009194225 3ffc8e18 ada%s
+D a-reatim.ads		20141009194225 67d7729a ada.real_time%s
+D a-retide.ads		20141009194225 081cdaa4 ada.real_time.delays%s
+D a-unccon.ads		20141009194225 f9eb8f06 ada.unchecked_conversion%s
+D button.ads		20141011203118 e913a290 button%s
+D driver.ads		20141011203118 3be6e89e driver%s
+D driver.adb		20141011211507 59a178c7 driver%b
+D interfac.ads		20141009194225 69adb1b9 interfaces%s
+D leds.ads		20141011203118 22f5ae35 leds%s
+D motor.ads		20141011203118 d788d5e5 motor%s
+D registers.ads		20141011203118 2e79265a registers%s
+D stm32f4.ads		20141011203118 dce524ba stm32f4%s
+D stm32f4-busses.ads	20141011203118 826bb111 stm32f4.busses%s
+D stm32f4-genericperipheral.ads  20141011203118 13a417c8 stm32f4.genericperipheral%s
+D stm32f4-gpio.ads	20141011205739 1bf074ce stm32f4.gpio%s
+D stm32f4-reset_clock_control.ads  20141011203118 bb502cff stm32f4.reset_clock_control%s
+D stm32f4-sysconfig_control.ads  20141011203118 936ca3e1 stm32f4.sysconfig_control%s
+D stm32f4-tim.ads	20141011203118 dec51611 stm32f4.tim%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-bb.ads		20141009194225 883768d6 system.bb%s
+D s-bbbosu.ads		20141009194225 3f67a4b3 system.bb.board_support%s
+D s-bbcppr.ads		20141009194225 37229a46 system.bb.cpu_primitives%s
+D s-bcprmu.ads		20141009194225 b5ec9aa9 system.bb.cpu_primitives.multiprocessors%s
+D s-bbinte.ads		20141009194225 4743e2d6 system.bb.interrupts%s
+D s-bbpara.ads		20141009194225 ea820e4a system.bb.parameters%s
+D s-bbthre.ads		20141009194225 d71e350d system.bb.threads%s
+D s-bbthqu.ads		20141009194225 6162d982 system.bb.threads.queues%s
+D s-bbtime.ads		20141009194225 d0e0540a system.bb.time%s
+D s-multip.ads		20141009194225 f33e0e35 system.multiprocessors%s
+D s-osinte.ads		20141009194225 9761d940 system.os_interface%s
+D s-parame.ads		20141009194225 fd0a774e system.parameters%s
+D s-stoele.ads		20141009194225 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20141009194225 ed88f8fb system.storage_elements%b
+D s-tasinf.ads		20141009194225 801abd01 system.task_info%s
+D s-taspri.ads		20141009194225 3d95fc44 system.task_primitives%s
+D s-taskin.ads		20141009194225 41d03b44 system.tasking%s
+D s-tasres.ads		20141009194225 0c8ef6fb system.tasking.restricted%s
+D s-tarest.ads		20141009194225 128b2dbd system.tasking.restricted.stages%s
+D s-unstyp.ads		20141009194225 510692af system.unsigned_types%s
+X 1 ada.ads
+16K9*Ada 19e8 7|32r6 32r25
+X 2 a-reatim.ads
+41K13*Real_Time 146e18 7|32w10 32r29
+43M9*Time<28|46M9> 7|65r20
+55I9*Time_Span<28|81I9> 7|62r20 63r20 64r20
+62V13*Clock{43M9}<28|135p13> 7|65s31
+64V14*"+"{43M9} 7|87s38 91s38
+80V14*"*"{55I9} 7|83s25
+82V14*"/"{55I9} 7|81s48 82s30 83s34
+95V13*Microseconds{55I9} 7|81s23
+X 5 button.ads
+33K9*Button 40e11 7|31w6 31r25
+X 6 driver.ads
+34K9*Driver 51l5 51e11 7|36b14 96l5 96t11
+41t9*PWM 7|61b14 95l8 95t11
+X 7 driver.adb
+37M9 Index 50r15 52r30
+38M9 Phases_index 53r30
+40i4 MaxSpeed{integer}
+41i4 MaxDutyCyclePercent{integer}
+43i4 MinSpeed{integer}
+44i4 MinDutyCyclePercent{integer}
+46i4 DutyCyclePercent{integer}
+47i4 PWMFrequency{integer} 81r50
+48i4 Speed{integer}
+50m4 Next_LED{37M9} 85r27 89r26
+52a4 Pattern(9|37E9) 85r18 89r17
+53a4 Phases(12|38M9)
+62i7 onPeriod{2|55I9} 82m10 91r40
+63i7 offPeriod{2|55I9} 83m10 87r40
+64i7 period{2|55I9} 81m10 82r23 83r27
+65m7 Next_Start{2|43M9} 87m13 87r27 91m13 91r27 93r22
+66b7 PWM_On{boolean} 84r14 86m13 90m13
+X 8 interfac.ads
+60M9*Unsigned_16
+X 9 leds.ads
+34K9*LEDs 7|30w6 30r25 9|65e9
+37E9*User_LED 7|52r40 9|37e47
+37n22*Green{37E9} 7|52r80
+37n29*Orange{37E9} 7|52r61
+37n37*Red{37E9} 7|52r69
+37n42*Blue{37E9} 7|52r74
+59U14*On 7|89s13
+60U14*Off 7|85s13
+X 10 motor.ads
+3K9*motor 7|29w6 29r25 10|17e10
+X 11 registers.ads
+41K9*Registers 7|34w6 34r25 11|76e14
+X 12 stm32f4.ads
+35K9*STM32F4 7|33w6 33r25 12|138e12
+38M9*Half_Word<8|60M9> 7|53r47
+X 19 system.ads
+60K9*System 6|32w6 43r24 19|170e11
+87M9*Address
+123I12*Any_Priority{integer}
+124I12*Priority{123I12}
+127i4*Default_Priority{124I12} 6|43r31
+X 28 s-bbtime.ads
+46M9*Time
+81I9*Time_Span<long_long_integer>
+X 36 s-taskin.ads
+347V13*Get_Sec_Stack{19|87M9} 348i<c,__gnat_get_secondary_stack>22
+402U14*Initialize_Slave 403i24
+X 38 s-tarest.ads
+222U14*Activate_All_Tasks_Sequential 223i<c,__gnat_activate_all_tasks>22
+

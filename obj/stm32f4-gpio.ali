@@ -1,0 +1,110 @@
+V "GNAT Lib v2014"
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB
+
+RN
+RV NO_UNCHECKED_CONVERSION
+RV NO_IMPLEMENTATION_ATTRIBUTES
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLEMENTATION_RESTRICTIONS
+RR NO_ELABORATION_CODE
+RV SPARK_05
+
+U stm32f4.gpio%s	stm32f4-gpio.ads	b690b229 NE OO PK GE IU
+W ada%s			ada.ads			ada.ali
+W ada.unchecked_conversion%s
+W stm32f4%s		stm32f4.adb		stm32f4.ali
+W stm32f4.genericperipheral%s  stm32f4-genericperipheral.ads  stm32f4-genericperipheral.ali
+W system%s		system.ads		system.ali
+W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
+
+D ada.ads		20141009194225 3ffc8e18 ada%s
+D a-unccon.ads		20141009194225 f9eb8f06 ada.unchecked_conversion%s
+D interfac.ads		20141009194225 69adb1b9 interfaces%s
+D stm32f4.ads		20141011203118 dce524ba stm32f4%s
+D stm32f4-genericperipheral.ads  20141011203118 13a417c8 stm32f4.genericperipheral%s
+D stm32f4-gpio.ads	20141011205739 1bf074ce stm32f4.gpio%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-unstyp.ads		20141009194225 510692af system.unsigned_types%s
+X 1 ada.ads
+16K9*Ada 19e8 6|36r6 106r35
+X 2 a-unccon.ads
+17+9 Source 6|106r63
+18+9 Target 6|106r79
+20v14*Unchecked_Conversion 6|36w10 106r39
+X 3 interfac.ads
+63M9*Unsigned_32
+X 4 stm32f4.ads
+35K9*STM32F4 138e12 6|38r6 43r9 45r30 108r5
+37M9*Word<3|63M9> 6|42r18 81r17 82r17 83r17 84r17 106r73
+43M9*Bits_4 6|72r25 74r40
+51N4*Peripheral_Base 6|101r81
+54N4*Peripheral_Alias_Base 6|101r41
+129N4*AHB1RSTR_Base 6|46r35
+130N4*AHB1ENR_Base 6|47r35 101r66
+131N4*AHB1LPENR_Base 6|48r35
+X 5 stm32f4-genericperipheral.ads
+5i4 RCC_ENABLE_REGISTER_Base{natural} 6|47r7
+6i4 RCC_RESET_REGISTER_Base{natural} 6|46r7
+7i4 RCC_LOWPOW_REGISTER_Base{natural} 6|48r7
+8i4 RCCBit{natural} 6|49r7
+9k17*GenericPeripheral 15e30 6|38w14 45r38
+X 6 stm32f4-gpio.ads
+40i4 Address{natural} 100r84
+41i4 RCCBit{natural} 49r35 101r103
+42m4 MODER_Reset{4|37M9} 107r60
+43k17*GPIO 4|35k9 6|40z4 41z4 42z4 54E4 108l13 108e17
+45K12*peripheral[5|9]
+52E9*ModeType 52e55 53r8 54r42
+52n22*Input{52E9} 53r22
+52n29*Output{52E9} 53r34
+52n37*Alternate{52E9} 53r47
+52n48*Analog{52E9} 53r63
+54A9*MODER_type(52E9)<integer> 77r17 103r31 106r89 107r31
+57E9*OutputType 57e44 58r8 59r43
+57n24*PushPull{57E9} 58r24
+57n34*OpenDrain{57E9} 58r39
+59A9*OTYPER_type(57E9)<integer> 78r17
+62E9*SpeedType 62e52 63r8 64r41
+62n23*S2MHz{62E9} 63r23
+62n29*S25MHz{62E9} 63r32
+62n36*S50MHz{62E9} 63r42
+62n44*S100MHz{62E9} 63r53
+64A9*OSPEEDR_type(62E9)<integer> 79r17
+67E9*PullType 67e50 68r8 69r39
+67n22*No_Pull{67E9} 68r22
+67n31*Pull_Up{67E9} 68r34
+67n40*Pull_Down{67E9} 68r46
+69A9*PUPDR_type(67E9)<integer> 80r17
+72m4*AF_USART1{4|43M9}
+74A9*AFR_type(4|43M9)<integer> 85r16
+76R9*GPIO_Register 86e14 88r8 100r25
+77a7 MODER{54A9} 89r7
+78a7 OTYPER{59A9} 90r7
+79a7 OSPEEDR{64A9} 91r7
+80a7 PUPDR{69A9} 92r7
+81m7 IDR{4|37M9} 93r7
+82m7 ODR{4|37M9} 94r7
+83m7 BSRR{4|37M9} 95r7
+84m7 LCKR{4|37M9} 96r7
+85a7 AFR{74A9} 97r7
+100r4*Device{76R9}
+101i4*RCC_ENABLE_addr{natural} 102r69
+102b4*RCC_ENABLE{boolean}
+103a4*MODERResetValue{54A9} 107c4
+106V13 As_MODER_Reset[2|20]{54A9} 107s45
+X 7 system.ads
+60K9*System 6|35w6 100r65 102r50 7|170e11
+87M9*Address 6|100r65 102r50
+

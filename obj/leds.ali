@@ -1,0 +1,117 @@
+V "GNAT Lib v2014"
+A --RTS=/vagrant/arm-ada
+A -gnatA
+A -mlittle-endian
+A -mfloat-abi=hard
+A -mcpu=cortex-m4
+A -mfpu=fpv4-sp-d16
+A -mthumb
+A -g
+A -g
+A -gnatwa
+A -gnatQ
+A -gnat12
+P DB
+
+RN
+RV NO_IMPLICIT_LOOPS
+RV NO_UNCHECKED_CONVERSION
+RV NO_IMPLEMENTATION_ATTRIBUTES
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U leds%b		leds.adb		4cad0c7d OO PK
+W ada%s			ada.ads			ada.ali
+W ada.unchecked_conversion%s
+W registers%s		registers.ads		registers.ali
+W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
+
+U leds%s		leds.ads		fe108a8f BN EB EE NE OO PK
+W stm32f4%s		stm32f4.adb		stm32f4.ali
+W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
+
+D ada.ads		20141009194225 3ffc8e18 ada%s
+D a-unccon.ads		20141009194225 f9eb8f06 ada.unchecked_conversion%s
+D interfac.ads		20141009194225 69adb1b9 interfaces%s
+D leds.ads		20141011203118 22f5ae35 leds%s
+D leds.adb		20141011211713 b9ca0b14 leds%b
+D registers.ads		20141011203118 2e79265a registers%s
+D stm32f4.ads		20141011203118 dce524ba stm32f4%s
+D stm32f4-busses.ads	20141011203118 826bb111 stm32f4.busses%s
+D stm32f4-genericperipheral.ads  20141011203118 13a417c8 stm32f4.genericperipheral%s
+D stm32f4-gpio.ads	20141011205739 1bf074ce stm32f4.gpio%s
+D stm32f4-reset_clock_control.ads  20141011203118 bb502cff stm32f4.reset_clock_control%s
+D stm32f4-sysconfig_control.ads  20141011203118 936ca3e1 stm32f4.sysconfig_control%s
+D stm32f4-tim.ads	20141011203118 dec51611 stm32f4.tim%s
+D system.ads		20141009194225 9bca7a93 system%s
+D s-stoele.ads		20141009194225 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20141009194225 ed88f8fb system.storage_elements%b
+D s-unstyp.ads		20141009194225 510692af system.unsigned_types%s
+X 1 ada.ads
+16K9*Ada 19e8 5|29r6 35r33
+X 2 a-unccon.ads
+17+9 Source 5|35r59
+18+9 Target 5|35r79
+20v14*Unchecked_Conversion 5|29w10 35r37
+X 3 interfac.ads
+60M9*Unsigned_16
+63M9*Unsigned_32
+89V13*Shift_Left{60M9} 5|53s34
+109V13*Shift_Left{63M9} 5|44s28
+X 4 leds.ads
+34K9*LEDs 65l5 65e9 5|33b14 77l5 77t9
+37E9*User_LED 37e47 39r8 50r8 54r11 55r11 56r11 57r11 59r25 60r26 5|35r69
+. 37r25 42r26
+37n22*Green{37E9} 40r7 55r28 5|47r37
+37n29*Orange{37E9} 41r7 54r28 5|47r88
+37n37*Red{37E9} 42r7 56r28 5|47r55
+37n42*Blue{37E9} 43r7 57r28 5|47r71
+54e4*LED3=54:28{37E9}
+55e4*LED4=55:28{37E9}
+56e4*LED5=56:28{37E9}
+57e4*LED6=57:28{37E9}
+59U14*On 59>18 5|37b14 40l8 40t10
+59e18 This{37E9} 5|37b18 39r48
+60U14*Off 60>19 5|42b14 45l8 45t11
+60e19 This{37E9} 5|42b19 44r60
+62U14*All_Off 5|51b14 54l8 54t15
+63U14*All_On 5|56b14 59l8 59t14 72s7
+X 5 leds.adb
+35V13 As_Half_Word[2|20]{7|38M9} 39s34 44s46
+47m4 All_LEDs{7|38M9} 49r31 53r46 58r34
+61U14 Initialize 61b14 73l8 73t18 76s4
+X 6 registers.ads
+41K9*Registers 5|31w6 31r21 6|76e14
+52K12*GPIOD[10|43] 5|39r7 44r7 53r7 58r7 65r7 67r7 67r53 68r7 68r53 69r7
+. 69r53 70r7 70r53
+X 7 stm32f4.ads
+35K9*STM32F4 4|32w6 32r19 7|138e12
+37M9*Word<3|63M9> 5|39r28 44r40 53r28 58r28
+38M9*Half_Word<3|60M9> 4|50r26 5|35r89 47r24
+X 9 stm32f4-genericperipheral.ads
+10b4*RCC_ENABLE{boolean} 5|65m24[10|45[6|52]]
+X 10 stm32f4-gpio.ads
+45K12*peripheral[9|9] 5|65m13[6|52]
+52E9*ModeType
+52n29*Output{52E9[6|52]} 5|67r59[6|52]
+54A9*MODER_type(52E9[6|52])<integer>
+57E9*OutputType
+57n24*PushPull{57E9[6|52]} 5|68r59[6|52]
+59A9*OTYPER_type(57E9[6|52])<integer>
+62E9*SpeedType
+62n44*S100MHz{62E9[6|52]} 5|69r59[6|52]
+64A9*OSPEEDR_type(62E9[6|52])<integer>
+67E9*PullType
+67n22*No_Pull{67E9[6|52]} 5|70r59[6|52]
+69A9*PUPDR_type(67E9[6|52])<integer>
+76R9*GPIO_Register
+77a7*MODER{54A9[6|52]} 5|67m20[6|52] 67r20[6|52]
+78a7*OTYPER{59A9[6|52]} 5|68m20[6|52] 68r20[6|52]
+79a7*OSPEEDR{64A9[6|52]} 5|69m20[6|52] 69r20[6|52]
+80a7*PUPDR{69A9[6|52]} 5|70m20[6|52] 70r20[6|52]
+83m7*BSRR{7|37M9} 5|39m20[6|52] 44m20[6|52] 53m20[6|52] 58m20[6|52]
+100r4*Device{76R9[6|52]} 5|39m13[6|52] 44m13[6|52] 53m13[6|52] 58m13[6|52]
+. 67m13[6|52] 67r13[6|52] 68m13[6|52] 68r13[6|52] 69m13[6|52] 69r13[6|52]
+. 70m13[6|52] 70r13[6|52]
+
