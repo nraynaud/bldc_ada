@@ -1,7 +1,16 @@
+with Ada.Unchecked_Conversion;
+
 with Registers; use Registers;
 
 package body motor is
-   my_pins : constant Word := 2#11_1111_0000#;
+   subtype my_pins_index_type is GPIOE.pin_index range 4 .. 9;
+   procedure setBits;
+   procedure clearBits;
+
+   currentPhase : GPIOE.pin_type;
+
+   function AS_pins is new Ada.Unchecked_Conversion (Source => Half_Word, Target => GPIOE.pin_type);
+
    procedure disable is
    begin
       enabled := False;
@@ -16,17 +25,17 @@ package body motor is
 
    procedure clearBits is
    begin
-      GPIOE.Device.BSRR := Shift_Left (my_pins, 16);
+      GPIOE.Device.BSRR.reset (my_pins_index_type'Range) := (others => True);
    end clearBits;
 
    procedure setBits is
    begin
-      GPIOE.Device.BSRR := Word (currentPhase) or Shift_Left (my_pins, 16);
+      GPIOE.Device.BSRR.set := currentPhase;
    end setBits;
 
    procedure setPhase (phase : Half_Word) is
    begin
-      currentPhase := phase;
+      currentPhase := AS_pins (phase);
       if enabled then
          setBits;
       end if;

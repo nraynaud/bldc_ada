@@ -32,7 +32,7 @@
 with System;
 
 package Driver is
-
+   pragma Elaborate_Body;
    --   task Controller is
    --      pragma Storage_Size (4 * 1024);
    --      pragma Priority (System.Default_Priority);

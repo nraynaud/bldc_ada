@@ -37,19 +37,10 @@ package LEDs is
    type User_LED is (Green, Orange, Red, Blue);
 
    for User_LED use
-     (Green  => 2#0001_0000_0000_0000#,
-      Orange => 2#0010_0000_0000_0000#,
-      Red    => 2#0100_0000_0000_0000#,
-      Blue   => 2#1000_0000_0000_0000#);
-
-   --  As a result of the representation clause, avoid iterating directly over
-   --  the type since that will require an implicit lookup in the generated
-   --  code of the loop.  Such usage seems unlikely so this direct
-   --  representation is reasonable, and efficient.
-
-   for User_LED'Size use Half_Word'Size;
-   --  we convert the LED values to Word values in order to write them to
-   --  the register, so the size must be the same
+     (Green  => 12,
+      Orange => 13,
+      Red    => 14,
+      Blue   => 15);
 
    LED3 : User_LED renames Orange;
    LED4 : User_LED renames Green;
@@ -58,6 +49,7 @@ package LEDs is
 
    procedure On (This : User_LED) with Inline;
    procedure Off (This : User_LED) with Inline;
+   procedure Toggle (This : User_LED);
 
    procedure All_Off with Inline;
    procedure All_On  with Inline;

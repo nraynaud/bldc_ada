@@ -71,6 +71,14 @@ package STM32F4.GPIO is
    --  AFL constants
    AF_USART1 : constant Bits_4 := 7;
 
+   type pin_index is mod 16;
+   type pin_type is array (pin_index) of Boolean with Pack, size => 16;
+
+   type BSRR_TYPE is record
+      set : pin_type;
+      reset : pin_type;
+   end record with Pack, Size=>32 ;
+
    type AFR_type is array (0 .. 15) of Bits_4 with Pack, Size =>64;
 
    type GPIO_Register is record
@@ -78,10 +86,10 @@ package STM32F4.GPIO is
       OTYPER  : OTYPER_type;  --  output type register
       OSPEEDR : OSPEEDR_type;  --  output speed register
       PUPDR   : PUPDR_type;  --  pull-up/pull-down register
-      IDR     : Word;       --  input data register
-      ODR     : Word;       --  output data register
-      BSRR    : Word;       --  bit set/reset register
-      LCKR    : Word;       --  configuration lock register
+      IDR     : pin_type;       --  input data register
+      ODR     : pin_type;       --  output data register
+      BSRR    : BSRR_TYPE;       --  bit set/reset register
+      LCKR    : pin_type;       --  configuration lock register
       AFR    : AFR_type;   --  alternate function register coalesced
    end record;
 
@@ -90,10 +98,10 @@ package STM32F4.GPIO is
       OTYPER  at 4 range 0 .. 15;
       OSPEEDR at 8 range 0 .. 31;
       PUPDR   at 12 range 0 .. 31;
-      IDR     at 16 range 0 .. 31;
-      ODR     at 20 range 0 .. 31;
+      IDR     at 16 range 0 .. 15;
+      ODR     at 20 range 0 .. 15;
       BSRR    at 24 range 0 .. 31;
-      LCKR    at 28 range 0 .. 31;
+      LCKR    at 28 range 0 .. 15;
       AFR    at 32 range 0 .. 63;
    end record;
 

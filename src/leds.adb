@@ -32,30 +32,35 @@ with Registers; use Registers;
 
 package body LEDs is
 
-   function As_Half_Word is new Ada.Unchecked_Conversion (Source => User_LED, Target => Half_Word);
+   function AS_Integer is new Ada.Unchecked_Conversion (Source => User_LED, Target => GPIOD.pin_index);
 
    procedure On (This : User_LED) is
    begin
-      GPIOD.Device.BSRR := Word (As_Half_Word (This));
+      GPIOD.Device.BSRR.set (AS_Integer (This))  := True;
    end On;
+
+   procedure Toggle (This : User_LED) is
+   begin
+      if GPIOD.Device.ODR (AS_Integer (This)) /= False then
+         Off (This);
+      else
+         On (This);
+      end if;
+   end Toggle;
 
    procedure Off (This : User_LED) is
    begin
-      GPIOD.Device.BSRR := Shift_Left (Word (As_Half_Word (This)), 16);
+      GPIOD.Device.BSRR.reset (AS_Integer (This))  := True;
    end Off;
-
-   All_LEDs : constant Half_Word := Green'Enum_Rep or Red'Enum_Rep or Blue'Enum_Rep or Orange'Enum_Rep;
-
-   pragma Compile_Time_Error (All_LEDs /= 16#F000#, "Invalid representation for All_LEDs_On");
 
    procedure All_Off is
    begin
-      GPIOD.Device.BSRR := Word (Shift_Left (All_LEDs, 16));
+      GPIOD.Device.BSRR.reset (AS_Integer (User_LED'First) .. AS_Integer (User_LED'Last))   := (others => True);
    end All_Off;
 
    procedure All_On is
    begin
-      GPIOD.Device.BSRR := Word (All_LEDs);
+      GPIOD.Device.BSRR.set (AS_Integer (User_LED'First) .. AS_Integer (User_LED'Last))   := (others => True);
    end All_On;
 
    procedure Initialize is

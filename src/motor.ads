@@ -10,8 +10,4 @@ package motor is
    procedure setPhase (phase : Half_Word);
 
    enabled : Boolean := True;
-private
-   procedure setBits;
-   procedure clearBits;
-   currentPhase : Half_Word;
 end motor;
