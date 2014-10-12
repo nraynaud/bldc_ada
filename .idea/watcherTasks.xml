@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="-pipe $FilePath$" />
+      <option name="arguments" value=" ssh -- 'cd /vagrant/bldc_ada/src; /usr/gnat/bin/arm-eabi-gnatpp -w -v -pipe --RTS=/vagrant/arm-ada  -M150 $FileName$'" />
       <option name="checkSyntaxErrors" value="false" />
       <option name="description" value="prettyprint Ada files" />
       <option name="exitCodeBehavior" value="ALWAYS" />
-      <option name="fileExtension" value="ads" />
+      <option name="fileExtension" value="adb" />
       <option name="immediateSync" value="true" />
       <option name="name" value="prettyprint" />
       <option name="output" value="$FilePath$" />
@@ -15,7 +15,7 @@
       </option>
       <option name="outputFromStdout" value="true" />
       <option name="passParentEnvs" value="true" />
-      <option name="program" value="/opt/local/bin/gnatpp" />
+      <option name="program" value="vagrant" />
       <option name="scopeName" value="Open Files" />
       <option name="trackOnlyRoot" value="false" />
       <option name="workingDir" value="$PROJECT_DIR$" />

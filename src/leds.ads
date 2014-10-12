@@ -36,11 +36,7 @@ package LEDs is
 
    type User_LED is (Green, Orange, Red, Blue);
 
-   for User_LED use
-     (Green  => 12,
-      Orange => 13,
-      Red    => 14,
-      Blue   => 15);
+   for User_LED use (Green => 12, Orange => 13, Red => 14, Blue => 15);
 
    LED3 : User_LED renames Orange;
    LED4 : User_LED renames Green;

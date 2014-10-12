@@ -269,6 +269,30 @@ package STM32F4.TIM is
       Pack,
       Size => 14;
 
+   type LOCK_type is (Off, Level1, Level2, Level3) with Size =>2;
+   for LOCK_type use (Off=>0, Level1=>1, Level2=>2, Level3=>3);
+
+   type TIM_Register_BDTR is record
+      DTG : Byte;
+      LOCK: LOCK_type;
+      OSSI : Boolean;
+      OSSR: Boolean;
+      BKE : Boolean;
+      BKP: Boolean;
+      AOE: Boolean;
+      MOE: Boolean;
+   end record;
+   for TIM_Register_BDTR use record
+      DTG at 0 range 0..7;
+      LOCK at 0 range 8..9;
+      OSSI at 0 range 10..10;
+      OSSR at 0 range 11..11;
+      BKE at 0 range 12..12;
+      BKP at 0 range 13..13;
+      AOE at 0 range 14..14;
+      MOE at 0 range 15..15;
+   end record;
+
    type TIM_Register is record
       CR1      : TIM_Register_CR1;  --  control register 1
       CR2      : TIM_Register_CR2;  --  control register 2
@@ -289,7 +313,7 @@ package STM32F4.TIM is
       CCR2     : Timer_Size;   --  capture/compare register 2
       CCR3     : Timer_Size;   --  capture/compare register 3
       CCR4     : Timer_Size;   --  capture/compare register 4
-      BDTR     : Word;   --  break and dead-time register TBD
+      BDTR     : TIM_Register_BDTR;   --  break and dead-time register
       DCR      : Word;   --  DMA control register TBD
       DMAR     : Word;   --  DMA address for full transfer
    end record;
@@ -317,7 +341,7 @@ package STM32F4.TIM is
       CCR2     at 56 range 0 .. 15;
       CCR3     at 60 range 0 .. 15;
       CCR4     at 64 range 0 .. 15;
-      BDTR     at 68 range 0 .. 31;
+      BDTR     at 68 range 0 .. 15;
       DCR      at 72 range 0 .. 31;
       DMAR     at 76 range 0 .. 31;
    end record;

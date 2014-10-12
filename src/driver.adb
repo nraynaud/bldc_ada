@@ -48,27 +48,28 @@ package body Driver is
       PWM_On     : Boolean := True;
    begin
       GPIOE.peripheral.RCC_ENABLE := True;
-      GPIOE.Device.MODER (9)      := GPIOE.Alternate;
-      GPIOE.Device.OTYPER (9)     := GPIOE.PushPull;
-      GPIOE.Device.OSPEEDR (9)    := GPIOE.S50MHz;
-      GPIOE.Device.PUPDR (9)      := GPIOE.No_Pull;
-      GPIOE.Device.AFR (9)        := 1;
+      GPIOE.Device.MODER (7..9)      := (others=>GPIOE.Alternate);
+      GPIOE.Device.OTYPER (7..9)     := (others=>GPIOE.PushPull);
+      GPIOE.Device.OSPEEDR (7..9)    := (others=>GPIOE.S2MHz);
+      GPIOE.Device.PUPDR (7..9)      := (others=>GPIOE.Pull_Up);
+      GPIOE.Device.AFR (7..9)        := (others=>1);
 
       GPIOA.peripheral.RCC_ENABLE := True;
       GPIOA.Device.MODER (8)      := GPIOA.Alternate;
       GPIOA.Device.OTYPER (8)     := GPIOA.PushPull;
-      GPIOA.Device.OSPEEDR (8)    := GPIOA.S50MHz;
-      GPIOA.Device.PUPDR (8)      := GPIOA.No_Pull;
+      GPIOA.Device.OSPEEDR (8)    := GPIOA.S2MHz;
+      GPIOA.Device.PUPDR (8)      := GPIOA.Pull_Up;
       GPIOA.Device.AFR (8)        := 1;
 
       TIM1.peripheral.RCC_ENABLE := True;
-      TIM1.TIM.PSC               := 90;
+      TIM1.TIM.PSC               := 900;
       TIM1.TIM.CR1.CEN           := True;
       TIM1.TIM.CR1.ARPE          := True;
       TIM1.TIM.CCER.CC1E         := True;
-      TIM1.TIM.ARR               := 66;
-      TIM1.TIM.CCR1              := 333;
-      TIM1.TIM.DIER.CC1IE        := True;
+      TIM1.TIM.ARR               := 6600;
+      TIM1.TIM.BDTR.MOE          := True;-- advanced timers TIM1 and TIM8 have an extra parking brake to remove.
+      TIM1.TIM.CCR1              := 3300;
+      TIM1.TIM.DIER.CC1IE         := True;
       TIM1.TIM.CCMR_Ch1          := (CCxS => TIM1.Output, OCxFE => False, OCxPE => True, OCxM => TIM1.PWM1, OCxCE => False);
       loop
          period    := Microseconds (1_000_000) / PWMFrequency;

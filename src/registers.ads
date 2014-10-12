@@ -49,16 +49,25 @@ package Registers is
 
    package GPIOA is new STM32F4.GPIO(Address => GPIOA_Base, RCCBit=>0, MODER_Reset =>16#A800_0000#);
    package GPIOB is new STM32F4.GPIO(Address => GPIOB_Base, RCCBit=>1, MODER_Reset =>16#0000_0280#);
+   package GPIOC is new STM32F4.GPIO(Address => GPIOD_Base, RCCBit=>2);
    package GPIOD is new STM32F4.GPIO(Address => GPIOD_Base, RCCBit=>3);
    package GPIOE is new STM32F4.GPIO(Address => GPIOE_Base, RCCBit=>4);
 
    package TIM1 is new STM32F4.TIM(
-   Register_Base => TIM1_Base,
+        Register_Base            => TIM1_Base,
         RCC_RESET_REGISTER_Base  => APB2RSTR_Base,
         RCC_ENABLE_REGISTER_Base => APB2ENR_Base,
         RCC_LOWPOW_REGISTER_Base => APB2LPENR_Base,
         RCCBit                   => 0,
         Timer_Size => Half_Word);
+   package TIM8 is new STM32F4.TIM(
+        Register_Base            => TIM8_Base,
+        RCC_RESET_REGISTER_Base  => APB2RSTR_Base,
+        RCC_ENABLE_REGISTER_Base => APB2ENR_Base,
+        RCC_LOWPOW_REGISTER_Base => APB2LPENR_Base,
+        RCCBit                   => 1,
+        Timer_Size => Half_Word);
+
    EXTI : EXTI_Register with
      Volatile,
      Address => System'To_Address (EXTI_Base);
