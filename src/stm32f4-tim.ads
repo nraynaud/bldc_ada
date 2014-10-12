@@ -146,19 +146,35 @@ package STM32F4.TIM is
            ICxFF at 0 range 4..7;
    end record;
 
+   type TIM_Register_CCER is record
+      CC1E : Boolean;
+      CC1P :Boolean;
+      CC1NE:Boolean;
+      CC1NP:Boolean;
+      CC2E : Boolean;
+      CC2P :Boolean;
+      CC2NE:Boolean;
+      CC2NP:Boolean;
+      CC3E : Boolean;
+      CC3P :Boolean;
+      CC3NE:Boolean;
+      CC3NP:Boolean;
+      CC4E : Boolean;
+      CC4P :Boolean;
+   end record with Pack, Size => 14;
+
    type TIM_Register is record
       CR1   : TIM_Register_CR1;  --  control register 1
       CR2   : TIM_Register_CR2;  --  control register 2
       SMCR  : TIM_Register_SMCR;  --  slave mode control register
-      -- TBD
-      DIER  : Word;  --  DMA/interrupt enable register
-      SR    : Word;       --  status register
-      EGR   : Word;       --  event generation register
+      DIER  : Word;  --  DMA/interrupt enable register TBD
+      SR    : Word;       --  status register TBD
+      EGR   : Word;       --  event generation register TBD
       CCMR_Ch1 : TIM_Register_CCMR; --  capture/compare mode register, split by channel
       CCMR_Ch2 : TIM_Register_CCMR;
       CCMR_Ch3 : TIM_Register_CCMR;
       CCMR_Ch4 : TIM_Register_CCMR;
-      CCER  : Word;   --  capture/compare enable register
+      CCER  : TIM_Register_CCER;   --  capture/compare enable register
       CNT   : Timer_Size;   --  counter
       PSC   : Timer_Size;   --  prescaler
       ARR   : Timer_Size;   --   auto-reload register
@@ -167,8 +183,8 @@ package STM32F4.TIM is
       CCR2  : Timer_Size;   --  capture/compare register 2
       CCR3  : Timer_Size;   --  capture/compare register 3
       CCR4  : Timer_Size;   --  capture/compare register 4
-      BDTR  : Word;   --  alternate function high register
-      DCR   : Word;   --  DMA control register
+      BDTR  : Word;   --  break and dead-time register TBD
+      DCR   : Word;   --  DMA control register TBD
       DMAR  : Word;   --  DMA address for full transfer
    end record;
 
@@ -183,6 +199,7 @@ package STM32F4.TIM is
       CCMR_Ch2 at 25 range 0 .. 7;
       -- yes there is a hole here
       -- actually in this bank all the registers are 16 bits long with a 32bit alignment
+      -- unless the timer is 32bits
       CCMR_Ch3 at 28 range 0 .. 7;
       CCMR_Ch4 at 29 range 0 .. 7;
       CCER  at 32 range 0 .. 31;

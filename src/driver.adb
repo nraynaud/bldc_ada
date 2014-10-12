@@ -65,18 +65,28 @@ package body Driver is
       Next_Start : Time    := Clock;
       PWM_On     : Boolean := True;
    begin
-      --TIM1.peripheral.RCC_ENABLE := True;
-     -- GPIOE.peripheral.RCC_ENABLE := True;
-     -- GPIOE.Device.MODER (9)   := GPIOE.Alternate;
-     -- GPIOE.Device.OTYPER (9)  := GPIOE.PushPull;
-     -- GPIOE.Device.OSPEEDR (9) := GPIOE.S100MHz;
-     -- GPIOE.Device.PUPDR (9)   := GPIOE.No_Pull;
-     -- GPIOE.Device.AFR (9)     := 1;
+     GPIOE.peripheral.RCC_ENABLE := True;
+     GPIOE.Device.MODER (9)   := GPIOE.Alternate;
+     GPIOE.Device.OTYPER (9)  := GPIOE.PushPull;
+     GPIOE.Device.OSPEEDR (9) := GPIOE.S50MHz;
+     GPIOE.Device.PUPDR (9)   := GPIOE.No_Pull;
+     GPIOE.Device.AFR (9)     := 1;
 
-     -- TIM1.TIM.CR1.CEN                := True;
-     -- TIM1.TIM.ARR                := 30000;
-     -- TIM1.TIM.CCR1                := 15000;
-     -- TIM1.TIM.CCMR_Ch1       := (CCxS => TIM1.Output, OCxFE => False, OCxPE => True, OCxM => TIM1.PWM1, OCxCE =>False);
+     GPIOA.peripheral.RCC_ENABLE := True;
+     GPIOA.Device.MODER (8)   := GPIOA.Alternate;
+     GPIOA.Device.OTYPER (8)  := GPIOA.PushPull;
+     GPIOA.Device.OSPEEDR (8) := GPIOA.S50MHz;
+     GPIOA.Device.PUPDR (8)   := GPIOA.No_Pull;
+     GPIOA.Device.AFR (8)     := 1;
+
+     TIM1.peripheral.RCC_ENABLE := True;
+     TIM1.TIM.PSC            := 2;
+     TIM1.TIM.CR1.CEN         := True;
+     TIM1.TIM.CR1.ARPE        := True;
+     TIM1.TIM.CCER.CC1E           := True;
+     TIM1.TIM.ARR                := 665;
+     TIM1.TIM.CCR1                := 333;
+     TIM1.TIM.CCMR_Ch1       := (CCxS => TIM1.Output, OCxFE => False, OCxPE => True, OCxM => TIM1.PWM1, OCxCE =>False);
       loop
          period    := Microseconds (1_000_000) / PWMFrequency;
          onPeriod  := period / 3;

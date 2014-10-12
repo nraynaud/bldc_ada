@@ -126,13 +126,13 @@ package STM32F4 is
    TIM3_Base            : constant := APB1_Peripheral_Base + 16#0400#;
    TIM2_Base            : constant := APB1_Peripheral_Base + 16#0000#;
 
-   AHB1RSTR_Base : constant :=RCC_Base + 16;
-   AHB1ENR_Base : constant :=RCC_Base + 48;
-   AHB1LPENR_Base : constant :=RCC_Base + 80;
+   AHB1RSTR_Base : constant := RCC_Base + 16;
+   AHB1ENR_Base : constant := RCC_Base + 48;
+   AHB1LPENR_Base : constant := RCC_Base + 80;
 
    APB2RSTR_Base : constant :=RCC_Base +36;
    APB2ENR_Base :constant:= RCC_Base +68;
    APB2LPENR_Base:constant :=RCC_Base +00;
 
-   function PeriphBitBand (bit_number, register_base : Natural) return System.Address;
+   function PeriphBitBand (register_base,bit_number : Natural) return System.Address;
 end STM32F4;

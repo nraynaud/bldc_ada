@@ -98,6 +98,7 @@ package STM32F4.GPIO is
    end record;
 
    Device             : GPIO_Register with Volatile, Address => System'To_Address (Address);
+   pragma Import (Ada, Device);
    RCC_ENABLE_addr : constant Natural :=Peripheral_Alias_Base + (AHB1ENR_Base - Peripheral_Base)*32 + RCCBit*4;
    RCC_ENABLE : Boolean with Atomic , Address => System'To_Address (RCC_ENABLE_addr);
    MODERResetValue : constant MODER_type;
