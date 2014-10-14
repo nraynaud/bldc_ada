@@ -58,21 +58,19 @@ package STM32F4.TIM is
     Compare_OC4   => 7);
 
    type TIM_Register_CR2 is record
-      CCPC     : Boolean;
-      CCUS     : Boolean;
-      CCDS     : Boolean;
-      MMS      : MasterMode_type;
-      TI1S     : Boolean;
-      OIS1     : Boolean;
-      OIS1N    : Boolean;
-      OIS2     : Boolean;
-      OIS2N    : Boolean;
-      OIS3     : Boolean;
-      OIS3N    : Boolean;
-      OIS4N    : Boolean;
-      RESERVED : Boolean := False;
-   end record with
-      Volatile;
+      CCPC     : Boolean := False;
+      CCUS     : Boolean := False;
+      CCDS     : Boolean := False;
+      MMS      : MasterMode_type := Reset;
+      TI1S     : Boolean := False;
+      OIS1     : Boolean := False;
+      OIS1N    : Boolean := False;
+      OIS2     : Boolean := False;
+      OIS2N    : Boolean := False;
+      OIS3     : Boolean := False;
+      OIS3N    : Boolean := False;
+      OIS4N    : Boolean := False;
+   end record with Volatile, Size=>15;
 
    for TIM_Register_CR2 use record
       CCPC     at 0 range  0 ..  0;
@@ -87,12 +85,12 @@ package STM32F4.TIM is
       OIS3     at 0 range 12 .. 12;
       OIS3N    at 0 range 13 .. 13;
       OIS4N    at 0 range 14 .. 14;
-      RESERVED at 0 range 15 .. 15;
    end record;
 
    type SlaveMode is (Disabled, Encoder1, Encoder2, Encoder3, Reset, Gated, Trigger, External) with
         Size => 3;
-   for SlaveMode use (Disabled => 0, Encoder1 => 1, Encoder2 => 2, Encoder3 => 3, Reset => 4, Gated => 5, Trigger => 6, External => 7);
+   for SlaveMode use (Disabled => 0, Encoder1 => 1, Encoder2 => 2, Encoder3 => 3, Reset => 4, Gated => 5, Trigger => 6,
+      External => 7);
 
    type TriggerSelection is (Internal0, Internal1, Internal2, Internal3, TI1_Edge, TI1_Filtered, TI2_Filtered, External) with
         Size => 3;
@@ -165,21 +163,21 @@ package STM32F4.TIM is
    end record;
 
    type TIM_Register_DIER is record
-      UIE : Boolean;
-      CC1IE:Boolean;
-      CC2IE: Boolean;
-      CC3IE: Boolean;
-      CC4IE: Boolean;
-      COMIE: Boolean;
-      TIE: Boolean;
-      BIE: Boolean;
-      UDE: Boolean;
-      CC1DE: Boolean;
-      CC2DE: Boolean;
-      CC3DE: Boolean;
-      CC4DE: Boolean;
-      COMDE: Boolean;
-      TDE: Boolean;
+      UIE   : Boolean;
+      CC1IE : Boolean;
+      CC2IE : Boolean;
+      CC3IE : Boolean;
+      CC4IE : Boolean;
+      COMIE : Boolean;
+      TIE   : Boolean;
+      BIE   : Boolean;
+      UDE   : Boolean;
+      CC1DE : Boolean;
+      CC2DE : Boolean;
+      CC3DE : Boolean;
+      CC4DE : Boolean;
+      COMDE : Boolean;
+      TDE   : Boolean;
    end record with Pack, Size => 15;
 
    type TIM_Register_SR is record
@@ -215,6 +213,27 @@ package STM32F4.TIM is
       CC4OF at 0 range 12 .. 12;
    end record;
 
+   type TIM_Register_EGR is record
+      UG   : Boolean := False;
+      CC1G : Boolean := False;
+      CC2G : Boolean := False;
+      CC3G : Boolean := False;
+      CC4G : Boolean := False;
+      COMG : Boolean := False;
+      TG   : Boolean := False;
+      BG   : Boolean := False;
+   end record with Size => 8;
+
+   for TIM_Register_EGR use record
+      UG   at 0 range 0 .. 0;
+      CC1G at 0 range 1 .. 1;
+      CC2G at 0 range 2 .. 2;
+      CC3G at 0 range 3 .. 3;
+      CC4G at 0 range 4 .. 4;
+      COMG at 0 range 5 .. 5;
+      TG   at 0 range 6 .. 6;
+      BG   at 0 range 7 .. 7;
+   end record;
    type Capture_Compare_Selection is (Output, Input_TI1, Input_TI2, Input_TRC) with
         Size => 2;
    for Capture_Compare_Selection use (Output => 0, Input_TI1 => 1, Input_TI2 => 2, Input_TRC => 3);
@@ -225,7 +244,8 @@ package STM32F4.TIM is
 
    type Output_Compare_Mode is (Frozen, Match_High, Match_Low, Toggle, Force_Low, Force_High, PWM1, PWM2) with
         Size => 3;
-   for Output_Compare_Mode use (Frozen => 0, Match_High => 1, Match_Low => 2, Toggle => 3, Force_Low => 4, Force_High => 5, PWM1 => 6, PWM2 => 7);
+   for Output_Compare_Mode use (Frozen => 0, Match_High => 1, Match_Low => 2, Toggle => 3, Force_Low => 4,
+   Force_High => 5, PWM1 => 6, PWM2 => 7);
 
    type TIM_Register_CCMR (CCxS : Capture_Compare_Selection := Output) is record
       case CCxS is
@@ -273,14 +293,14 @@ package STM32F4.TIM is
    for LOCK_type use (Off=>0, Level1=>1, Level2=>2, Level3=>3);
 
    type TIM_Register_BDTR is record
-      DTG : Byte;
-      LOCK: LOCK_type;
-      OSSI : Boolean;
-      OSSR: Boolean;
-      BKE : Boolean;
-      BKP: Boolean;
-      AOE: Boolean;
-      MOE: Boolean;
+      DTG  : Byte := 0;
+      LOCK : LOCK_type := Off;
+      OSSI : Boolean := False;
+      OSSR : Boolean := False;
+      BKE  : Boolean := False;
+      BKP  : Boolean := False;
+      AOE  : Boolean := False;
+      MOE  : Boolean := False;
    end record;
    for TIM_Register_BDTR use record
       DTG at 0 range 0..7;
@@ -299,7 +319,7 @@ package STM32F4.TIM is
       SMCR     : TIM_Register_SMCR;  --  slave mode control register
       DIER     : TIM_Register_DIER;  --  DMA/interrupt enable register
       SR       : TIM_Register_SR;       --  status register
-      EGR      : Word;       --  event generation register TBD
+      EGR      : TIM_Register_EGR;       --  event generation register TBD
       CCMR_Ch1 : TIM_Register_CCMR; --  capture/compare mode register, split by channel
       CCMR_Ch2 : TIM_Register_CCMR;
       CCMR_Ch3 : TIM_Register_CCMR;
@@ -308,7 +328,7 @@ package STM32F4.TIM is
       CNT      : Timer_Size;   --  counter
       PSC      : Timer_Size;   --  prescaler
       ARR      : Timer_Size;   --   auto-reload register
-      RCR      : Word;   --  repetition counter register
+      RCR      : Byte;   --  repetition counter register
       CCR1     : Timer_Size;   --  capture/compare register 1
       CCR2     : Timer_Size;   --  capture/compare register 2
       CCR3     : Timer_Size;   --  capture/compare register 3
@@ -324,7 +344,7 @@ package STM32F4.TIM is
       SMCR     at  8 range 0 .. 15;
       DIER     at 12 range 0 .. 14;
       SR       at 16 range 0 .. 13;
-      EGR      at 20 range 0 .. 31;
+      EGR      at 20 range 0 ..  7;
       CCMR_Ch1 at 24 range 0 ..  7;
       CCMR_Ch2 at 25 range 0 ..  7;
       -- yes there is a hole here
@@ -336,7 +356,7 @@ package STM32F4.TIM is
       CNT      at 36 range 0 .. 31;
       PSC      at 40 range 0 .. 31;
       ARR      at 44 range 0 .. 31;
-      RCR      at 48 range 0 .. 31;
+      RCR      at 48 range 0 ..  7;
       CCR1     at 52 range 0 .. 15;
       CCR2     at 56 range 0 .. 15;
       CCR3     at 60 range 0 .. 15;

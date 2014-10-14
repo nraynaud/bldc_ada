@@ -43,9 +43,9 @@ generic
 package STM32F4.GPIO is
 
    package peripheral is new STM32F4.GenericPeripheral (
-      RCC_RESET_REGISTER_Base  => AHB1RSTR_Base,
-      RCC_ENABLE_REGISTER_Base => AHB1ENR_Base,
-      RCC_LOWPOW_REGISTER_Base => AHB1LPENR_Base,
+      RCC_RESET_REGISTER_Base  => RCC_Base + AHB1RSTR_Offset,
+      RCC_ENABLE_REGISTER_Base => RCC_Base + AHB1ENR_Offset,
+      RCC_LOWPOW_REGISTER_Base => RCC_Base + AHB1LPENR_Offset,
       RCCBit                   => RCCBit);
 
    --  MODER constants
@@ -94,24 +94,21 @@ package STM32F4.GPIO is
    end record;
 
    for GPIO_Register use record
-      MODER   at 0 range 0 .. 31;
-      OTYPER  at 4 range 0 .. 15;
-      OSPEEDR at 8 range 0 .. 31;
+      MODER   at 0  range 0 .. 31;
+      OTYPER  at 4  range 0 .. 15;
+      OSPEEDR at 8  range 0 .. 31;
       PUPDR   at 12 range 0 .. 31;
       IDR     at 16 range 0 .. 15;
       ODR     at 20 range 0 .. 15;
       BSRR    at 24 range 0 .. 31;
       LCKR    at 28 range 0 .. 15;
-      AFR    at 32 range 0 .. 63;
+      AFR     at 32 range 0 .. 63;
    end record;
 
    Device             : GPIO_Register with Volatile, Address => System'To_Address (Address);
    pragma Import (Ada, Device);
-   RCC_ENABLE_addr : constant Natural :=Peripheral_Alias_Base + (AHB1ENR_Base - Peripheral_Base)*32 + RCCBit*4;
-   RCC_ENABLE : Boolean with Atomic , Address => System'To_Address (RCC_ENABLE_addr);
    MODERResetValue : constant MODER_type;
-
 private
-   function As_MODER_Reset is new Ada.Unchecked_Conversion (  Source => Word, Target => MODER_type);
+   function As_MODER_Reset is new Ada.Unchecked_Conversion (Source => Word, Target => MODER_type);
    MODERResetValue : constant MODER_type := As_MODER_Reset(MODER_Reset);
 end STM32F4.GPIO;

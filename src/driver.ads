@@ -33,19 +33,8 @@ with System;
 
 package Driver is
    pragma Elaborate_Body;
-   --   task Controller is
-   --      pragma Storage_Size (4 * 1024);
-   --      pragma Priority (System.Default_Priority);
-   --   end Controller;
-
-   task PWM is
+   task speedControl is
       pragma Storage_Size (4 * 1024);
       pragma Priority (System.Default_Priority);
-   end PWM;
-
-   --   task speedControl is
-   --      pragma Storage_Size (4 * 1024);
-   --      pragma Priority (System.Default_Priority);
-   --   end speedControl;
-
+   end speedControl;
 end Driver;
