@@ -274,20 +274,20 @@ package STM32F4.TIM is
    end record;
 
    type TIM_Register_CCER is record
-      CC1E  : Boolean;
-      CC1P  : Boolean;
-      CC1NE : Boolean;
-      CC1NP : Boolean;
-      CC2E  : Boolean;
-      CC2P  : Boolean;
-      CC2NE : Boolean;
-      CC2NP : Boolean;
-      CC3E  : Boolean;
-      CC3P  : Boolean;
-      CC3NE : Boolean;
-      CC3NP : Boolean;
-      CC4E  : Boolean;
-      CC4P  : Boolean;
+      CC1E  : Boolean := False;
+      CC1P  : Boolean := False;
+      CC1NE : Boolean := False;
+      CC1NP : Boolean := False;
+      CC2E  : Boolean := False;
+      CC2P  : Boolean := False;
+      CC2NE : Boolean := False;
+      CC2NP : Boolean := False;
+      CC3E  : Boolean := False;
+      CC3P  : Boolean := False;
+      CC3NE : Boolean := False;
+      CC3NP : Boolean := False;
+      CC4E  : Boolean := False;
+      CC4P  : Boolean := False;
    end record with
       Pack,
       Size => 14;
