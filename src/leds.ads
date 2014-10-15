@@ -29,14 +29,17 @@
 --  This file provides declarations for the user LEDs on the STM32F4 Discovery
 --  board from ST Microelectronics.
 
-with STM32F4; use STM32F4;
+with Registers; use Registers;
 
 package LEDs is
    pragma Elaborate_Body;
 
-   type User_LED is (Green, Orange, Red, Blue);
+   subtype User_LED is GPIOD.pin_index range 12..15;
 
-   for User_LED use (Green => 12, Orange => 13, Red => 14, Blue => 15);
+   Green  : constant User_LED := 12;
+   Orange : constant User_LED := 13;
+   Red    : constant User_LED := 14;
+   Blue   : constant User_LED := 15;
 
    LED3 : User_LED renames Orange;
    LED4 : User_LED renames Green;

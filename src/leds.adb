@@ -28,20 +28,16 @@
 
 with Ada.Unchecked_Conversion;
 
-with Registers; use Registers;
-
 package body LEDs is
-
-   function AS_Integer is new Ada.Unchecked_Conversion (Source => User_LED, Target => GPIOD.pin_index);
 
    procedure On (This : User_LED) is
    begin
-      GPIOD.Device.BSRR.set (AS_Integer (This))  := True;
+      GPIOD.Device.BSRR.set (This)  := True;
    end On;
 
    procedure Toggle (This : User_LED) is
    begin
-      if GPIOD.Device.ODR (AS_Integer (This)) /= False then
+      if GPIOD.Device.ODR (This) /= False then
          Off (This);
       else
          On (This);
@@ -50,17 +46,17 @@ package body LEDs is
 
    procedure Off (This : User_LED) is
    begin
-      GPIOD.Device.BSRR.reset (AS_Integer (This))  := True;
+      GPIOD.Device.BSRR.reset (This)  := True;
    end Off;
 
    procedure All_Off is
    begin
-      GPIOD.Device.BSRR.reset (AS_Integer (User_LED'First) .. AS_Integer (User_LED'Last))   := (others => True);
+      GPIOD.Device.BSRR.reset (User_LED'Range)   := (others => True);
    end All_Off;
 
    procedure All_On is
    begin
-      GPIOD.Device.BSRR.set (AS_Integer (User_LED'First) .. AS_Integer (User_LED'Last))   := (others => True);
+      GPIOD.Device.BSRR.set (User_LED'Range)   := (others => True);
    end All_On;
 
    procedure Initialize is
@@ -68,10 +64,10 @@ package body LEDs is
       --  Enable clock for GPIO-D
       GPIOD.peripheral.RCC_ENABLE := True;
       --  Configure PD12-15
-      GPIOD.Device.MODER (12 .. 15)   := (others => GPIOD.Output);
-      GPIOD.Device.OTYPER (12 .. 15)  := (others => GPIOD.PushPull);
-      GPIOD.Device.OSPEEDR (12 .. 15) := (others => GPIOD.S100MHz);
-      GPIOD.Device.PUPDR (12 .. 15)   := (others => GPIOD.No_Pull);
+      GPIOD.Device.MODER   (User_LED'Range) := (others => GPIOD.Output);
+      GPIOD.Device.OTYPER  (User_LED'Range) := (others => GPIOD.PushPull);
+      GPIOD.Device.OSPEEDR (User_LED'Range) := (others => GPIOD.S100MHz);
+      GPIOD.Device.PUPDR   (User_LED'Range) := (others => GPIOD.No_Pull);
 
    end Initialize;
 

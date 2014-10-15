@@ -59,21 +59,24 @@ package Registers is
         RCC_ENABLE_REGISTER_Base => RCC_Base + APB2ENR_Offset,
         RCC_LOWPOW_REGISTER_Base => RCC_Base + APB2LPENR_Offset,
         RCCBit                   => 0,
-        Timer_Size => Half_Word);
+        Timer_Size               => Half_Word,
+        AlternateFunction        => 1);
    package TIM3 is new STM32F4.TIM(
        Register_Base            => TIM3_Base,
        RCC_RESET_REGISTER_Base  => RCC_Base + APB1RSTR_Offset,
        RCC_ENABLE_REGISTER_Base => RCC_Base + APB1ENR_Offset,
        RCC_LOWPOW_REGISTER_Base => RCC_Base + APB1LPENR_Offset,
        RCCBit                   => 1,
-       Timer_Size               => Half_Word);
+       Timer_Size               => Half_Word,
+       AlternateFunction        => 2);
    package TIM8 is new STM32F4.TIM(
         Register_Base            => TIM8_Base,
         RCC_RESET_REGISTER_Base  => RCC_Base + APB2RSTR_Offset,
         RCC_ENABLE_REGISTER_Base => RCC_Base + APB2ENR_Offset,
         RCC_LOWPOW_REGISTER_Base => RCC_Base + APB2LPENR_Offset,
         RCCBit                   => 1,
-        Timer_Size               => Half_Word);
+        Timer_Size               => Half_Word,
+        AlternateFunction        => 3);
 
    EXTI : EXTI_Register with
      Volatile,

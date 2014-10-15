@@ -7,6 +7,7 @@ generic
    RCC_ENABLE_REGISTER_Base : Natural;
    RCC_LOWPOW_REGISTER_Base : Natural;
    RCCBit                   : Natural;
+   AlternateFunction        : Bits_4;
    type Timer_Size is mod <>;
 package STM32F4.TIM is
    package peripheral is new STM32F4.GenericPeripheral
@@ -14,6 +15,8 @@ package STM32F4.TIM is
       RCC_ENABLE_REGISTER_Base => RCC_ENABLE_REGISTER_Base,
       RCC_LOWPOW_REGISTER_Base => RCC_LOWPOW_REGISTER_Base,
       RCCBit                   => RCCBit);
+
+   GPIO_AF : constant Bits_4 := AlternateFunction;
 
    type Center_Alignment_type is (Edge, Down, Up, UpDown) with
         Size => 2;

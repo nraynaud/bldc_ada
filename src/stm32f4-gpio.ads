@@ -48,30 +48,26 @@ package STM32F4.GPIO is
       RCC_LOWPOW_REGISTER_Base => RCC_Base + AHB1LPENR_Offset,
       RCCBit                   => RCCBit);
 
-   --  MODER constants
+   type pin_index is mod 16;
    type ModeType is (Input, Output, Alternate, Analog);
    for ModeType use (Input => 0, Output => 1, Alternate => 2, Analog => 3);
-   type MODER_type is array (0 .. 15) of ModeType with Pack, Size => 32;
+   type MODER_type is array (pin_index) of ModeType with Pack, Size => 32;
 
-   --  OTYPER constants
    type OutputType is (PushPull, OpenDrain);
    for OutputType use (PushPull => 0, OpenDrain => 1);
-   type OTYPER_type is array (0 .. 15) of OutputType with Pack, Size => 16;
+   type OTYPER_type is array (pin_index) of OutputType with Pack, Size => 16;
 
-   --  OSPEEDR constants
    type SpeedType is (S2MHz,S25MHz,S50MHz, S100MHz);
    for SpeedType use (S2MHz=>0,S25MHz=>1,S50MHz=>2, S100MHz=>3);
-   type OSPEEDR_type is array(0..15) of SpeedType with Pack, Size => 32;
+   type OSPEEDR_type is array(pin_index) of SpeedType with Pack, Size => 32;
 
-   --  PUPDR constants
    type PullType is (No_Pull, Pull_Up, Pull_Down);
    for PullType use (No_Pull=>0, Pull_Up=>1, Pull_Down =>2);
-   type PUPDR_type is array(0..15) of PullType with Pack, Size => 32;
+   type PUPDR_type is array(pin_index) of PullType with Pack, Size => 32;
 
    --  AFL constants
    AF_USART1 : constant Bits_4 := 7;
 
-   type pin_index is mod 16;
    type pin_type is array (pin_index) of Boolean with Pack, size => 16;
 
    type BSRR_TYPE is record
@@ -79,7 +75,7 @@ package STM32F4.GPIO is
       reset : pin_type;
    end record with Pack, Size=>32 ;
 
-   type AFR_type is array (0 .. 15) of Bits_4 with Pack, Size =>64;
+   type AFR_type is array (pin_index) of Bits_4 with Pack, Size =>64;
 
    type GPIO_Register is record
       MODER   : MODER_type;  --  mode register
