@@ -1,6 +1,5 @@
-with motor;         use motor;
+
 with LEDs;          use LEDs;
-with Button;        use Button;
 with Ada.Real_Time; use Ada.Real_Time;
 with STM32F4;       use STM32F4;
 with Registers;     use Registers;
@@ -17,15 +16,17 @@ package body Driver is
       C3 : Boolean;
       C3N :Boolean;
    end record;
+   type Encoder_mode is (Speed_Mode, Duty_Mode);
 
-   DutyCyclePercent : Integer := 50;
-   PWMFrequency     : Integer := 5000;
-   Speed            : Half_Word := 2;
-   savedSpeed       : Half_Word := Speed;
-   timer_frequency  : constant Integer := 1_000_000;
-   prescaler        : constant Integer := System.BB.Parameters.Clock_Frequency / timer_frequency;
+   DutyCyclePercent : Half_Word   := 50;
+   PWMFrequency     : constant Half_Word := 20000;
+   Speed            : constant Half_Word := 2;
+   savedSpeed       : Half_Word          := Speed;
+   timer_frequency  : constant Integer   := 1_000_000;
+   prescaler        : constant Half_Word   := Half_Word(System.BB.Parameters.Clock_Frequency / timer_frequency);
 
-   Next_LED : Index := 0;
+   Current_Encoder_Mode : Encoder_mode := Speed_Mode;
+   Next_LED : constant Index := 0;
 
    Pattern : constant array (Index) of User_LED         := (Orange, Red, Green);
    Phases  : constant array (Phases_index) of step :=
@@ -39,34 +40,55 @@ package body Driver is
    function readSpeed return Half_Word is
       readSpeed : Half_Word;
    begin
-      readSpeed := TIM3.TIM.CNT;
-      if TIM3.TIM.SR.UIF then
-         -- there was an overflow or underflow, refuse it;
-         TIM3.TIM.SR.UIF := False;
-         TIM3.TIM.CNT := savedSpeed;
-      else
-         savedSpeed := readSpeed;
-      end if;
-      if savedSpeed = 0 then
-         savedSpeed := 1;
+      if Current_Encoder_Mode = Speed_Mode then
+         readSpeed := TIM3.TIM.CNT;
+         if TIM3.TIM.SR.UIF then
+            -- there was an overflow or underflow, refuse it;
+            TIM3.TIM.SR.UIF := False;
+            TIM3.TIM.CNT := savedSpeed;
+         else
+            savedSpeed := readSpeed;
+         end if;
+         if savedSpeed = 0 then
+            savedSpeed := 1;
+         end if;
       end if;
       return savedSpeed;
    end readSpeed;
 
+   function readDutyCycle return Half_Word is
+      readDutyCycle : Half_Word;
+   begin
+      if Current_Encoder_Mode = Duty_Mode then
+         readDutyCycle := TIM3.TIM.CNT;
+         if TIM3.TIM.SR.UIF then
+            -- there was an overflow or underflow, refuse it;
+            TIM3.TIM.SR.UIF := False;
+            TIM3.TIM.CNT := DutyCyclePercent;
+         else
+            DutyCyclePercent := readDutyCycle;
+         end if;
+      end if;
+      return DutyCyclePercent;
+   end readDutyCycle;
+
    protected Driver is
       pragma Interrupt_Priority;
    private
-      procedure Interrupt_Handler;
-      pragma Attach_Handler (Interrupt_Handler, Ada.Interrupts.Names.TIM8_UP_TIM13_Interrupt);
+      procedure TIM_Handler;
+      procedure Button_Handler;
+      pragma Attach_Handler (TIM_Handler, Ada.Interrupts.Names.TIM8_UP_TIM13_Interrupt);
+      pragma Attach_Handler (Button_Handler, Ada.Interrupts.Names.EXTI0_Interrupt);
       Phase      : Phases_index := 0;
    end Driver;
 
    protected body Driver is
-      procedure Interrupt_Handler is
-      timer      : Integer := timer_frequency / Integer(readSpeed) -1;
-      p          : step := Phases(Phase);
-      counter    : constant Integer := timer_frequency / PWMFrequency;
-      compare    : constant Half_Word := Half_Word((counter * DutyCyclePercent + 50) / 100); -- +50 is for integer division rounding.
+
+      procedure TIM_Handler is
+      timer      : Integer := timer_frequency / Integer(readSpeed) - 1;
+      p          : constant step := Phases(Phase);
+      counter    : constant Integer := Integer(timer_frequency) / Integer(PWMFrequency);
+      compare    : constant Half_Word := Half_Word((counter * Integer(readDutyCycle) + 50) / 100); -- +50 is for integer division rounding.
       begin
          TIM8.TIM.SR.UIF := False;
          TIM1.TIM.ARR      := Half_Word(counter-1);
@@ -82,7 +104,26 @@ package body Driver is
          TIM8.TIM.ARR := Half_Word(timer);
          Toggle(Blue);
          Phase := Phase + 1;
-      end Interrupt_Handler;
+      end TIM_Handler;
+
+      procedure Button_Handler is
+      begin
+         EXTI.PR (0) := 1;
+         case Current_Encoder_Mode is
+            when Speed_Mode =>
+               TIM3.TIM.ARR               := Half_Word(100);
+               TIM3.TIM.CNT               := DutyCyclePercent;
+               TIM3.TIM.SR.UIF            := False;
+               Current_Encoder_Mode       := Duty_Mode;
+               GPIOC.Device.BSRR          := (reset => (8 => True, others => False), set => (9 => True, others => False));
+            when Duty_Mode =>
+               TIM3.TIM.ARR               := Half_Word(65535);
+               TIM3.TIM.CNT               := savedSpeed;
+               TIM3.TIM.SR.UIF            := False;
+               Current_Encoder_Mode       := Speed_Mode;
+               GPIOC.Device.BSRR          := (reset => (9 => True, others => False), set => (8 => True, others => False));
+         end case;
+      end Button_Handler;
    end Driver;
 
    procedure prepareHardware is
@@ -101,6 +142,11 @@ package body Driver is
       GPIOC.Device.MODER (6..7)   := (others => GPIOC.Alternate);
       GPIOC.Device.PUPDR (6..7)   := (others => GPIOC.Pull_Up);
       GPIOC.Device.AFR (6..7)     := (others => TIM3.GPIO_AF);
+
+      GPIOC.Device.MODER (8..9)   := (others => GPIOC.Output);
+      GPIOC.Device.OTYPER (8..9)  := (others => GPIOC.PushPull);
+      GPIOC.Device.BSRR.reset(9) := True;
+      GPIOC.Device.BSRR.set(8)   := True;
 
       TIM1.peripheral.RCC_ENABLE := True;
       TIM1.TIM.PSC               := Half_Word(prescaler - 1);
@@ -130,23 +176,24 @@ package body Driver is
       TIM8.TIM.BDTR              := (MOE =>True, DTG => 0, others=> <>);
       TIM8.TIM.CR2               := (CCPC =>True, others => <>);
       TIM8.TIM.CR1               := (ARPE|CEN => True,others => <>);
+
+      GPIOA.peripheral.RCC_ENABLE  := True;
+      GPIOA.Device.MODER (0) := GPIOA.Input;
+      GPIOA.Device.PUPDR (0) := GPIOA.No_Pull;
+
+      SYSCFG.EXTICR1 (0) := 0;
+      EXTI.FTSR (0) := 0;
+      EXTI.RTSR (0) := 1;
+      EXTI.IMR (0) := 1;
    end prepareHardware;
 
    task body speedControl is
-      period     : Time_Span;
       Next_Start : Time    := Clock;
-      PWM_On     : Boolean := True;
    begin
       prepareHardware;
       loop
-         if (PWM_On) then
-            Off (Pattern (Next_LED));
-            PWM_On     := False;
-         else
-            On (Pattern (Next_LED));
-            PWM_On     := True;
-         end if;
-            Next_Start := Next_Start + Milliseconds(1000) / Integer(readSpeed);
+         Toggle (Pattern (Next_LED));
+         Next_Start := Next_Start + Milliseconds(1000) / Integer(readSpeed);
          delay until Next_Start;
       end loop;
    end speedControl;

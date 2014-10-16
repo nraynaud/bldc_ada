@@ -51,19 +51,17 @@ package body LEDs is
 
    procedure All_Off is
    begin
-      GPIOD.Device.BSRR.reset (User_LED'Range)   := (others => True);
+      GPIOD.Device.BSRR.reset (User_LED'Range) := (others => True);
    end All_Off;
 
    procedure All_On is
    begin
-      GPIOD.Device.BSRR.set (User_LED'Range)   := (others => True);
+      GPIOD.Device.BSRR.set (User_LED'Range) := (others => True);
    end All_On;
 
    procedure Initialize is
    begin
-      --  Enable clock for GPIO-D
       GPIOD.peripheral.RCC_ENABLE := True;
-      --  Configure PD12-15
       GPIOD.Device.MODER   (User_LED'Range) := (others => GPIOD.Output);
       GPIOD.Device.OTYPER  (User_LED'Range) := (others => GPIOD.PushPull);
       GPIOD.Device.OSPEEDR (User_LED'Range) := (others => GPIOD.S100MHz);
