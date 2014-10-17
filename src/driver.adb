@@ -85,7 +85,7 @@ package body Driver is
    protected body Driver is
 
       procedure TIM_Handler is
-      timer      : Integer := timer_frequency / Integer(readSpeed) - 1;
+      timer      : Integer := timer_frequency / Integer(readSpeed) / 6 - 1;
       p          : constant step := Phases(Phase);
       counter    : constant Integer := Integer(timer_frequency) / Integer(PWMFrequency);
       compare    : constant Half_Word := Half_Word((counter * Integer(readDutyCycle) + 50) / 100); -- +50 is for integer division rounding.
@@ -97,8 +97,9 @@ package body Driver is
          TIM1.TIM.CCR3     := compare;
          TIM1.TIM.CCER     := (CC1E => p.C1 or p.C1N, CC2E => p.C2 or p.C2N, CC3E => p.C3 or p.C3N, others => False);
          TIM1.TIM.EGR.COMG := True;
-         GPIOE.Device.BSRR.reset (8 ..12) := (not p.C1, False, not p.C2, False, not p.C3);
-         GPIOE.Device.BSRR.set (8 ..12)   := (p.C1, False, p.C2, False, p.C3);
+         GPIOE.Device.BSRR :=(
+            reset => (8|10|12 => True, others => False),
+            set   => (8 => p.C1, 10 => p.C2, 12 => p.C3, others => False));
          timer := Integer'Max(timer, Integer(Half_Word'First));
          timer := Integer'Min(timer, Integer(Half_Word'Last));
          TIM8.TIM.ARR := Half_Word(timer);
@@ -115,13 +116,13 @@ package body Driver is
                TIM3.TIM.CNT               := DutyCyclePercent;
                TIM3.TIM.SR.UIF            := False;
                Current_Encoder_Mode       := Duty_Mode;
-               GPIOC.Device.BSRR          := (reset => (8 => True, others => False), set => (9 => True, others => False));
+               GPIOC.Device.BSRR          := (reset => (4 => True, others => False), set => (5 => True, others => False));
             when Duty_Mode =>
                TIM3.TIM.ARR               := Half_Word(65535);
                TIM3.TIM.CNT               := savedSpeed;
                TIM3.TIM.SR.UIF            := False;
                Current_Encoder_Mode       := Speed_Mode;
-               GPIOC.Device.BSRR          := (reset => (9 => True, others => False), set => (8 => True, others => False));
+               GPIOC.Device.BSRR          := (reset => (5 => True, others => False), set => (4 => True, others => False));
          end case;
       end Button_Handler;
    end Driver;
@@ -129,24 +130,21 @@ package body Driver is
    procedure prepareHardware is
    begin
       GPIOE.peripheral.RCC_ENABLE  := True;
-      GPIOE.Device.MODER (8..13)   := (others => GPIOE.Alternate);
+      GPIOE.Device.MODER           := (8|10|12 => GPIOE.Output, 9|11|13 => GPIOE.Alternate, others => <>);
       GPIOE.Device.OTYPER (8..13)  := (others => GPIOE.PushPull);
       GPIOE.Device.OSPEEDR (8..13) := (others => GPIOE.S50MHz);
       GPIOE.Device.PUPDR (8..13)   := (others => GPIOE.Pull_Down);
       GPIOE.Device.AFR (8..13)     := (others => TIM1.GPIO_AF);
-      GPIOE.Device.MODER (8)       := GPIOE.Output;
-      GPIOE.Device.MODER (10)      := GPIOE.Output;
-      GPIOE.Device.MODER (12)      := GPIOE.Output;
 
       GPIOC.peripheral.RCC_ENABLE := True;
       GPIOC.Device.MODER (6..7)   := (others => GPIOC.Alternate);
       GPIOC.Device.PUPDR (6..7)   := (others => GPIOC.Pull_Up);
       GPIOC.Device.AFR (6..7)     := (others => TIM3.GPIO_AF);
 
-      GPIOC.Device.MODER (8..9)   := (others => GPIOC.Output);
-      GPIOC.Device.OTYPER (8..9)  := (others => GPIOC.PushPull);
-      GPIOC.Device.BSRR.reset(9) := True;
-      GPIOC.Device.BSRR.set(8)   := True;
+      GPIOC.Device.MODER (4..5)   := (others => GPIOC.Output);
+      GPIOC.Device.OTYPER (4..5)  := (others => GPIOC.PushPull);
+      GPIOC.Device.BSRR           := (reset=>(5 => True, others => False), set=> (4 => True, others => False));
+
 
       TIM1.peripheral.RCC_ENABLE := True;
       TIM1.TIM.PSC               := Half_Word(prescaler - 1);
