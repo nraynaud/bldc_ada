@@ -259,7 +259,7 @@ package STM32F4.TIM is
             OCxCE : Boolean             := False;
          when Input_TI1 .. Input_TRC =>
             ICxPSC : Input_Prescaler := P_1;
-            ICxFF  : Timer_Filter    := No_Filter;
+            ICxF   : Timer_Filter    := No_Filter;
       end case;
    end record with
       Size => 8;
@@ -270,7 +270,7 @@ package STM32F4.TIM is
       OCxM   at 0 range 4 .. 6;
       OCxCE  at 0 range 7 .. 7;
       ICxPSC at 0 range 2 .. 3;
-      ICxFF  at 0 range 4 .. 7;
+      ICxF   at 0 range 4 .. 7;
    end record;
 
    type TIM_Register_CCER is record

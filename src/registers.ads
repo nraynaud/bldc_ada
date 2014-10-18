@@ -37,15 +37,15 @@ with STM32F4.GPIO;
 with STM32F4.Reset_Clock_Control; use STM32F4.Reset_Clock_Control;
 with STM32F4.SYSCONFIG_Control;   use STM32F4.SYSCONFIG_Control;
 with STM32F4.TIM;
+with STM32F4.USART;
 
 package Registers is
 
    pragma Warnings (Off, "*may call Last_Chance_Handler");
    pragma Warnings (Off, "*may be incompatible with alignment of object");
 
-   RCC : RCC_Register with
-     Volatile,
-     Address => System'To_Address (RCC_Base);
+   RCC : RCC_Register with Volatile, Address => System'To_Address (RCC_Base);
+   pragma Import (Ada, RCC);
 
    package GPIOA is new STM32F4.GPIO(Address => GPIOA_Base, RCCBit=>0, MODER_Reset =>16#A800_0000#);
    package GPIOB is new STM32F4.GPIO(Address => GPIOB_Base, RCCBit=>1, MODER_Reset =>16#0000_0280#);
@@ -78,6 +78,14 @@ package Registers is
         Timer_Size               => Half_Word,
         AlternateFunction        => 3);
 
+   package USART1 is new STM32F4.USART(
+      Register_Base            => USART1_Base,
+      RCC_RESET_REGISTER_Base  => RCC_Base + APB2RSTR_Offset,
+      RCC_ENABLE_REGISTER_Base => RCC_Base + APB2ENR_Offset,
+      RCC_LOWPOW_REGISTER_Base => RCC_Base + APB2LPENR_Offset,
+      RCCBit                   => 4,
+      AlternateFunction        => 7);
+
    EXTI : EXTI_Register with
      Volatile,
      Address => System'To_Address (EXTI_Base);
@@ -88,6 +96,7 @@ package Registers is
      Address => System'To_Address (SYSCFG_Base);
    pragma Import (Ada, SYSCFG);
 
+   function getAPB2ClockSpeed return Positive;
 
    pragma Warnings (On, "*may call Last_Chance_Handler");
    pragma Warnings (On, "*may be incompatible with alignment of object");

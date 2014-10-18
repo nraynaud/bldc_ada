@@ -35,43 +35,90 @@ pragma Restrictions (No_Elaboration_Code);
 with STM32F4.Busses; use STM32F4.Busses;
 package STM32F4.Reset_Clock_Control is
 
+   type Clock_Switch_type is (HSI, HSE, PLL) with Size => 2;
+   for Clock_Switch_type use (HSI => 0, HSE => 1, PLL => 3);
+
+   type HPRE_type is (SC_1, SC_2, SC_4, SC_8, SC_16, SC_64, SC_128, SC_256, SC_512) with Size => 4;
+   for HPRE_type use (SC_1 => 0, SC_2 => 2#1000#, SC_4 => 2#1001#, SC_8 => 2#1010#, SC_16 => 2#1011#, SC_64=> 2#1100#,
+      SC_128 => 2#1101#, SC_256 => 2#1110#, SC_512 => 2#1111#);
+
+   type PPRE_type is (AC_1, AC_2, AC_4, AC_8, AC_16) with Size => 3;
+   for PPRE_type use (AC_1 => 0, AC_2 => 2#100#, AC_4 => 2#101#, AC_8 => 2#110#, AC_16 => 2#111#);
+
+   type MCO1_type is (HSI, LSE, HSE, PLL) with Size =>2;
+   for MCO1_type use (HSI => 0, LSE => 1, HSE => 2, PLL => 3);
+
+   type MCOPRE_type is (MCO_1,MCO_2,MCO_3,MCO_4,MCO_5) with Size =>3;
+   for MCOPRE_type use (MCO_1 => 0, MCO_2 => 2#100#, MCO_3 => 2#101#, MCO_4 => 2#110#, MCO_5 => 2#111#);
+
+   type MCO2_type is (SYSCLK, PLLI2S, HSE, PLL) with Size =>2;
+   for MCO2_type use (SYSCLK => 0, PLLI2S => 1, HSE => 2, PLL => 3);
+
+   type RCC_Register_CFGR is record
+      SW      : Clock_Switch_type     := HSI;
+      SWS     : Clock_Switch_type     := HSI;
+      HPRE    : HPRE_type             := SC_1;
+      PPRE1   : PPRE_type             := AC_1;
+      PPRE2   : PPRE_type             := AC_1;
+      RTCPRE  : Integer range 0 ..31 := 0;
+      MCO1    : MCO1_type             := HSI;
+      I2SSRC  : Boolean               := False;
+      MCO1PRE : MCOPRE_type           := MCO_1;
+      MCO2PRE : MCOPRE_type           := MCO_1;
+      MCO2    : MCO2_type             := SYSCLK;
+   end record with Size => 32;
+
+   for RCC_Register_CFGR use record
+      SW      at 0 range 0  .. 1;
+      SWS     at 0 range 2  .. 3;
+      HPRE    at 0 range 4  .. 7;
+      PPRE1   at 0 range 10 .. 12;
+      PPRE2   at 0 range 13 .. 15;
+      RTCPRE  at 0 range 16 .. 20;
+      MCO1    at 0 range 21 .. 22;
+      I2SSRC  at 0 range 23 .. 23;
+      MCO1PRE at 0 range 24 .. 26;
+      MCO2PRE at 0 range 27 .. 29;
+      MCO2    at 0 range 30 .. 31;
+   end record;
+
    type RCC_Register is record
-      CR       : Word;  --  RCC clock control register at 16#00#
-      PLLCFGR  : Word;  --  RCC PLL configuration register at 16#04#
-      CFGR     : Word;  --  RCC clock configuration register at 16#08#
-      CIR      : Word;  --  RCC clock interrupt register at 16#0C#
-      AHB1RSTR : AHB1_type;      --  RCC AHB1 peripheral reset register at
-      AHB2RSTR : AHB2_type;  --  RCC AHB2 peripheral reset register at 16#14#
-      AHB3RSTR : Word;  --  RCC AHB3 peripheral reset register at 16#18#
-      Reserved_0: Word;  --  Reserved at 16#1C#
-      APB1RSTR : APB1_type;  --  RCC APB1 peripheral reset register at 16#20#
-      APB2RSTR : APB2_type;  --  RCC APB2 peripheral reset register at 16#24#
-      Reserved_1: Word;  --  Reserved at 16#28#
-      Reserved_2: Word;  --  Reserved at 16#2c#
-      AHB1ENR  : AHB1_type;      --  RCC AHB1 peripheral clock register at
-                                 --16#30#
-      AHB2ENR  : AHB2_type;  --  RCC AHB2 peripheral clock register at 16#34#
-      AHB3ENR  : Word;  --  RCC AHB3 peripheral clock register at 16#38#
-      Reserved_3: Word;  --  Reserved at 16#0C#
-      APB1ENR  : APB1_type;  --  RCC APB1 peripheral clock enable at 16#40#
-      APB2ENR  : APB2_type;  --  RCC APB2 peripheral clock enable at 16#44#
-      Reserved_4: Word;  --  Reserved at 16#48#
-      Reserved_5: Word;  --  Reserved at 16#4c#
-      AHB1LPENR: AHB1_type;      --  RCC AHB1 periph. low power clk en. at
-                                 --16#50#
-      AHB2LPENR: AHB2_type;  --  RCC AHB2 periph. low power clk en. at 16#54#
-      AHB3LPENR: Word;  --  RCC AHB3 periph. low power clk en. at 16#58#
-      Reserved_6: Word;  --  Reserved, 16#5C#
-      APB1LPENR: APB1_type;  --  RCC APB1 periph. low power clk en. at 16#60#
-      APB2LPENR: APB2_type;  --  RCC APB2 periph. low power clk en. at 16#64#
-      Reserved_7: Word;  --  Reserved at 16#68#
-      Reserved_8: Word;  --  Reserved at 16#6C#
-      BDCR     : Word;  --  RCC Backup domain control register at 16#70#
-      CSR      : Word;  --  RCC clock control/status register at 16#74#
-      Reserved_9: Word;  --  Reserved at 16#78#
+      CR         : Word;  --  RCC clock control register at 16#00#
+      PLLCFGR    : Word;  --  RCC PLL configuration register at 16#04#
+      CFGR       : RCC_Register_CFGR;  --  RCC clock configuration register at 16#08#
+      CIR        : Word;  --  RCC clock interrupt register at 16#0C#
+      AHB1RSTR   : AHB1_type;      --  RCC AHB1 peripheral reset register at
+      AHB2RSTR   : AHB2_type;  --  RCC AHB2 peripheral reset register at 16#14#
+      AHB3RSTR   : Word;  --  RCC AHB3 peripheral reset register at 16#18#
+      Reserved_0 : Word;  --  Reserved at 16#1C#
+      APB1RSTR   : APB1_type;  --  RCC APB1 peripheral reset register at 16#20#
+      APB2RSTR   : APB2_type;  --  RCC APB2 peripheral reset register at 16#24#
+      Reserved_1 : Word;  --  Reserved at 16#28#
+      Reserved_2 : Word;  --  Reserved at 16#2c#
+      AHB1ENR    : AHB1_type;      --  RCC AHB1 peripheral clock register at
+                                   --16#30#
+      AHB2ENR    : AHB2_type;  --  RCC AHB2 peripheral clock register at 16#34#
+      AHB3ENR    : Word;  --  RCC AHB3 peripheral clock register at 16#38#
+      Reserved_3 : Word;  --  Reserved at 16#0C#
+      APB1ENR    : APB1_type;  --  RCC APB1 peripheral clock enable at 16#40#
+      APB2ENR    : APB2_type;  --  RCC APB2 peripheral clock enable at 16#44#
+      Reserved_4 : Word;  --  Reserved at 16#48#
+      Reserved_5 : Word;  --  Reserved at 16#4c#
+      AHB1LPENR  : AHB1_type;      --  RCC AHB1 periph. low power clk en. at
+                                   --16#50#
+      AHB2LPENR  : AHB2_type;  --  RCC AHB2 periph. low power clk en. at 16#54#
+      AHB3LPENR  : Word;  --  RCC AHB3 periph. low power clk en. at 16#58#
+      Reserved_6 : Word;  --  Reserved, 16#5C#
+      APB1LPENR  : APB1_type;  --  RCC APB1 periph. low power clk en. at 16#60#
+      APB2LPENR  : APB2_type;  --  RCC APB2 periph. low power clk en. at 16#64#
+      Reserved_7 : Word;  --  Reserved at 16#68#
+      Reserved_8 : Word;  --  Reserved at 16#6C#
+      BDCR       : Word;  --  RCC Backup domain control register at 16#70#
+      CSR        : Word;  --  RCC clock control/status register at 16#74#
+      Reserved_9 : Word;  --  Reserved at 16#78#
       Reserved_10: Word;  --  Reserved at 16#7C#
-      SSCGR    : Word;  --  RCC spread spectrum clk gen. reg. at 16#80#
-      PLLI2SCFGR: Word;  --  RCC PLLI2S configuration register at 16#84#
+      SSCGR      : Word;  --  RCC spread spectrum clk gen. reg. at 16#80#
+      PLLI2SCFGR : Word;  --  RCC PLLI2S configuration register at 16#84#
    end record;
 
    for RCC_Register use record

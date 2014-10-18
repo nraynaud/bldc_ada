@@ -5,16 +5,18 @@ with STM32F4;       use STM32F4;
 with Registers;     use Registers;
 with System.BB.Parameters;
 with Ada.Interrupts.Names;
+with Ada.Text_IO;
+
 package body Driver is
    type Index is mod 3;
    type Phases_index is mod 6;
    type step is record
-      C1 : Boolean;
-      C1N :Boolean;
-      C2 : Boolean;
-      C2N :Boolean;
-      C3 : Boolean;
-      C3N :Boolean;
+      C1  : Boolean;
+      C1N : Boolean;
+      C2  : Boolean;
+      C2N : Boolean;
+      C3  : Boolean;
+      C3N : Boolean;
    end record;
    type Encoder_mode is (Speed_Mode, Duty_Mode);
 
@@ -39,20 +41,30 @@ package body Driver is
 
    function readSpeed return Half_Word is
       readSpeed : Half_Word;
+      readZeroCrossing : Half_word;
    begin
-      if Current_Encoder_Mode = Speed_Mode then
-         readSpeed := TIM3.TIM.CNT;
-         if TIM3.TIM.SR.UIF then
-            -- there was an overflow or underflow, refuse it;
-            TIM3.TIM.SR.UIF := False;
-            TIM3.TIM.CNT := savedSpeed;
-         else
-            savedSpeed := readSpeed;
-         end if;
-         if savedSpeed = 0 then
-            savedSpeed := 1;
-         end if;
-      end if;
+      case Current_Encoder_Mode is
+         when Speed_Mode =>
+            readSpeed := TIM3.TIM.CNT;
+            if TIM3.TIM.SR.UIF then
+               -- there was an overflow or underflow, refuse it;
+               TIM3.TIM.SR.UIF := False;
+               TIM3.TIM.CNT := savedSpeed;
+            else
+               savedSpeed := readSpeed;
+            end if;
+            if savedSpeed = 0 then
+               savedSpeed := 1;
+            end if;
+         when Duty_Mode =>
+            readZeroCrossing := Half_word(timer_frequency / Integer(TIM8.TIM.CCR3 * 12));
+            if readZeroCrossing > savedSpeed * 50 / 100 and readZeroCrossing < savedSpeed * 150 / 100 then
+               savedSpeed := (readZeroCrossing + 7 * savedSpeed)/8;
+               GPIOC.Device.BSRR.set(4) := True;
+            else
+               GPIOC.Device.BSRR.reset(5) := True;
+            end if;
+      end case;
       return savedSpeed;
    end readSpeed;
 
@@ -87,7 +99,7 @@ package body Driver is
       procedure TIM_Handler is
       timer      : Integer := timer_frequency / Integer(readSpeed) / 6 - 1;
       p          : constant step := Phases(Phase);
-      counter    : constant Integer := Integer(timer_frequency) / Integer(PWMFrequency);
+      counter    : constant Integer := timer_frequency / Integer(PWMFrequency);
       compare    : constant Half_Word := Half_Word((counter * Integer(readDutyCycle) + 50) / 100); -- +50 is for integer division rounding.
       begin
          TIM8.TIM.SR.UIF := False;
@@ -124,8 +136,31 @@ package body Driver is
                Current_Encoder_Mode       := Speed_Mode;
                GPIOC.Device.BSRR          := (reset => (5 => True, others => False), set => (4 => True, others => False));
          end case;
+
+      USART1.USART.DR := Character'Pos ('+');
+      Ada.Text_IO.Put('-');
+      Ada.Text_IO.Put_Line("lol");
       end Button_Handler;
    end Driver;
+
+   procedure prepareUSART (Baudrate : Positive) is
+      APB_Clock    : constant Positive := getAPB2ClockSpeed;
+      Int_Divider  : constant Positive := (25 * APB_Clock) / (4 * Baudrate);
+      Frac_Divider : constant Natural := Int_Divider rem 100;
+   begin
+      GPIOB.peripheral.RCC_ENABLE  := True;
+      GPIOB.Device.MODER   (6..7)  := (others => GPIOB.Alternate);
+      GPIOB.Device.OSPEEDR (6..7)  := (others => GPIOB.S50MHz);
+      GPIOB.Device.PUPDR   (6..7)  := (others => GPIOB.Pull_Up);
+      GPIOB.Device.AFR     (6..7)  := (others => USART1.GPIO_AF);
+
+      USART1.peripheral.RCC_ENABLE := True;
+      USART1.USART.BRR :=(
+         Fraction => Frac_Divider * 16 / 100,
+         Mantissa => (Int_Divider / 100));
+      USART1.USART.CR1 := (UE => True, RE => True, TE => True, others => <>);
+      USART1.USART.DR := Character'Pos ('!');
+   end prepareUSART;
 
    procedure prepareHardware is
    begin
@@ -137,14 +172,11 @@ package body Driver is
       GPIOE.Device.AFR (8..13)     := (others => TIM1.GPIO_AF);
 
       GPIOC.peripheral.RCC_ENABLE := True;
-      GPIOC.Device.MODER (6..7)   := (others => GPIOC.Alternate);
-      GPIOC.Device.PUPDR (6..7)   := (others => GPIOC.Pull_Up);
-      GPIOC.Device.AFR (6..7)     := (others => TIM3.GPIO_AF);
-
-      GPIOC.Device.MODER (4..5)   := (others => GPIOC.Output);
+      GPIOC.Device.MODER          := (4|5 => GPIOC.Output, 6|7|8 => GPIOC.Alternate, others => <>);
       GPIOC.Device.OTYPER (4..5)  := (others => GPIOC.PushPull);
       GPIOC.Device.BSRR           := (reset=>(5 => True, others => False), set=> (4 => True, others => False));
-
+      GPIOC.Device.PUPDR          := (6|7|8 => GPIOC.Pull_Up, others => <>);
+      GPIOC.Device.AFR            := (6|7 => TIM3.GPIO_AF, 8 => TIM8.GPIO_AF, others => <>);
 
       TIM1.peripheral.RCC_ENABLE := True;
       TIM1.TIM.PSC               := Half_Word(prescaler - 1);
@@ -173,7 +205,10 @@ package body Driver is
       TIM8.TIM.DIER              := (UIE => True, others => <>);
       TIM8.TIM.BDTR              := (MOE =>True, DTG => 0, others=> <>);
       TIM8.TIM.CR2               := (CCPC =>True, others => <>);
+      TIM8.TIM.CCMR_Ch3          := (CCxS => TIM8.Input_TI1, ICxF => TIM8.FCk_int_N8, others => <>);
+      TIM8.TIM.CCER              := (CC3E|CC3P|CC3NP =>True, others => <>);
       TIM8.TIM.CR1               := (ARPE|CEN => True,others => <>);
+      TIM8.TIM.EGR.COMG          := True;
 
       GPIOA.peripheral.RCC_ENABLE  := True;
       GPIOA.Device.MODER (0) := GPIOA.Input;
@@ -183,6 +218,9 @@ package body Driver is
       EXTI.FTSR (0) := 0;
       EXTI.RTSR (0) := 1;
       EXTI.IMR (0) := 1;
+
+      prepareUSART(115_200);
+      Ada.Text_IO.Put_Line ("Hello, world!");
    end prepareHardware;
 
    task body speedControl is
