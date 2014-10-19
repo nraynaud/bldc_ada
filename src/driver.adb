@@ -70,14 +70,7 @@ package body Driver is
             end if;
          when Duty_Mode =>
             if readRegister /= 0 then
-null;
---               readZeroCrossing := Half_word(timer_frequency / Integer(readRegister * 12));
---               if readZeroCrossing > savedSpeed * 50 / 100 and readZeroCrossing < savedSpeed * 150 / 100 then
---                  savedSpeed := (readZeroCrossing + 7 * savedSpeed)/8;
---                  GPIOC.Device.BSRR.set(4) := True;
---               else
---                  GPIOC.Device.BSRR.reset(5) := True;
---               end if;
+null; -- put feedback code here.
             end if;
       end case;
       return savedSpeed;
@@ -150,21 +143,9 @@ null;
                Current_Encoder_Mode       := Speed_Mode;
                GPIOC.Device.BSRR          := (reset => (5 => True, others => False), set => (4 => True, others => False));
          end case;
-
-      USART1.USART.DR := Character'Pos ('+');
-      Ada.Text_IO.Put('-');
-      Ada.Text_IO.Put_Line("lol");
+      Ada.Text_IO.Put_Line("button");
       end Button_Handler;
    end Driver;
-
-   procedure prepareUSART is
-   begin
-      GPIOB.peripheral.RCC_ENABLE  := True;
-      GPIOB.Device.MODER   (6..7)  := (others => GPIOB.Alternate);
-      GPIOB.Device.OSPEEDR (6..7)  := (others => GPIOB.S50MHz);
-      GPIOB.Device.PUPDR   (6..7)  := (others => GPIOB.Pull_Up);
-      GPIOB.Device.AFR     (6..7)  := (others => USART1.GPIO_AF);
-   end prepareUSART;
 
    procedure prepareHardware is
    begin
@@ -223,7 +204,6 @@ null;
       EXTI.RTSR (0) := 1;
       EXTI.IMR (0) := 1;
 
-      prepareUSART;
       Ada.Text_IO.Put_Line ("Hello, world!");
    end prepareHardware;
 
