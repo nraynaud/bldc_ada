@@ -30,6 +30,7 @@ package body Driver is
    Current_Encoder_Mode : Encoder_mode := Speed_Mode;
    Next_LED : constant Index := 0;
 
+   Phase      : Phases_index := 0;
    Pattern : constant array (Index) of User_LED         := (Orange, Red, Green);
    Phases  : constant array (Phases_index) of step :=
      ((True,  False, False, True,  False, False),
@@ -42,7 +43,18 @@ package body Driver is
    function readSpeed return Half_Word is
       readSpeed : Half_Word;
       readZeroCrossing : Half_word;
+      readRegister :  Half_word;
+      converted    : Integer := 0;
    begin
+      readRegister := TIM8.TIM.CCR3;
+      if readRegister /= 0 then
+         converted := timer_frequency / (Integer(readRegister)) / 12;
+      end if;
+      Ada.Text_IO.Put_Line(
+         Phases_index'Image(Phase)
+         & '|' & Half_Word'Image(savedSpeed)
+         & '|' & Integer'Image(converted)
+         & "|*" & Half_Word'Image(readRegister));
       case Current_Encoder_Mode is
          when Speed_Mode =>
             readSpeed := TIM3.TIM.CNT;
@@ -57,12 +69,15 @@ package body Driver is
                savedSpeed := 1;
             end if;
          when Duty_Mode =>
-            readZeroCrossing := Half_word(timer_frequency / Integer(TIM8.TIM.CCR3 * 12));
-            if readZeroCrossing > savedSpeed * 50 / 100 and readZeroCrossing < savedSpeed * 150 / 100 then
-               savedSpeed := (readZeroCrossing + 7 * savedSpeed)/8;
-               GPIOC.Device.BSRR.set(4) := True;
-            else
-               GPIOC.Device.BSRR.reset(5) := True;
+            if readRegister /= 0 then
+null;
+--               readZeroCrossing := Half_word(timer_frequency / Integer(readRegister * 12));
+--               if readZeroCrossing > savedSpeed * 50 / 100 and readZeroCrossing < savedSpeed * 150 / 100 then
+--                  savedSpeed := (readZeroCrossing + 7 * savedSpeed)/8;
+--                  GPIOC.Device.BSRR.set(4) := True;
+--               else
+--                  GPIOC.Device.BSRR.reset(5) := True;
+--               end if;
             end if;
       end case;
       return savedSpeed;
@@ -91,7 +106,6 @@ package body Driver is
       procedure Button_Handler;
       pragma Attach_Handler (TIM_Handler, Ada.Interrupts.Names.TIM8_UP_TIM13_Interrupt);
       pragma Attach_Handler (Button_Handler, Ada.Interrupts.Names.EXTI0_Interrupt);
-      Phase      : Phases_index := 0;
    end Driver;
 
    protected body Driver is
@@ -143,23 +157,13 @@ package body Driver is
       end Button_Handler;
    end Driver;
 
-   procedure prepareUSART (Baudrate : Positive) is
-      APB_Clock    : constant Positive := getAPB2ClockSpeed;
-      Int_Divider  : constant Positive := (25 * APB_Clock) / (4 * Baudrate);
-      Frac_Divider : constant Natural := Int_Divider rem 100;
+   procedure prepareUSART is
    begin
       GPIOB.peripheral.RCC_ENABLE  := True;
       GPIOB.Device.MODER   (6..7)  := (others => GPIOB.Alternate);
       GPIOB.Device.OSPEEDR (6..7)  := (others => GPIOB.S50MHz);
       GPIOB.Device.PUPDR   (6..7)  := (others => GPIOB.Pull_Up);
       GPIOB.Device.AFR     (6..7)  := (others => USART1.GPIO_AF);
-
-      USART1.peripheral.RCC_ENABLE := True;
-      USART1.USART.BRR :=(
-         Fraction => Frac_Divider * 16 / 100,
-         Mantissa => (Int_Divider / 100));
-      USART1.USART.CR1 := (UE => True, RE => True, TE => True, others => <>);
-      USART1.USART.DR := Character'Pos ('!');
    end prepareUSART;
 
    procedure prepareHardware is
@@ -219,7 +223,7 @@ package body Driver is
       EXTI.RTSR (0) := 1;
       EXTI.IMR (0) := 1;
 
-      prepareUSART(115_200);
+      prepareUSART;
       Ada.Text_IO.Put_Line ("Hello, world!");
    end prepareHardware;
 
